@@ -1,0 +1,33 @@
+record WebServer
+  start(argc, argv[]):
+    listenForConnections()
+    acceptAllConnections()
+
+record HttpServer
+  handleClientConnection(client):
+    produce(client)
+    
+record HttpRequestHandler
+  HttpRequestHandler(consumer_count):
+    create_threads(consumer_count, consume)
+  
+  consume():
+    client = queue.pop()
+    while true do
+      httpRequest(client)
+      if httpRequest.parse() = false then
+        break while
+      end if
+      httpResponse(client)
+      handled = handleHttpRequest(httpRequest, httpResponse)
+      if handled = false then
+        client.close()
+      end if
+    end while
+  
+  handleHttpRequest(httpRequest, httpResponse):
+    
+    
+record GoldbachWebApp
+
+record GoldbachCalculator
