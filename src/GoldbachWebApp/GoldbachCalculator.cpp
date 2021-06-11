@@ -57,7 +57,7 @@ std::string GoldbachCalculator::strongGoldbach(int64_t number) {
     }
   }
   if (show_sums) {
-    sums = td::to_string(-number) + ": " + std::to_string(sum_count) +
+    sums = std::to_string(-number) + ": " + std::to_string(sum_count) +
       " sums:" + sums + "\b \b\n";
   } else {
     sums = std::to_string(number) + ": " + std::to_string(sum_count)+" sums\n";
@@ -66,5 +66,32 @@ std::string GoldbachCalculator::strongGoldbach(int64_t number) {
 }
 
 std::string GoldbachCalculator::weakGoldbach(int64_t number) {
-  return nullptr;
+  bool show_sums = number < 0;
+  size_t sum_count = 0;
+  std::string sums = "";
+  if (show_sums) {
+    number = -number;
+  }
+
+  int64_t lowerIndex = 2, midIndex = 2, upperIndex = number - 4;
+  for (; upperIndex >= lowerIndex; lowerIndex++, upperIndex--) {
+    if (isPrime(lowerIndex)) {
+      for (int64_t mi = midIndex, ui = upperIndex; ui >= mi; ui--, mi++) {
+        if (isPrime(mi) && isPrime(ui) && mi >= lowerIndex) {
+          ++sum_count;
+          if (show_sums) {
+            sums += " " + std::to_string(lowerIndex) + " + " +
+              std::to_string(mi) + " + " + std::to_string(ui) + ",";
+          }
+        }
+      }
+    }
+  }
+  if (show_sums) {
+    sums = std::to_string(-number) + ": " + std::to_string(sum_count) +
+      " sums:" + sums + "\b \b\n";
+  } else {
+    sums = std::to_string(number) + ": " + std::to_string(sum_count)+" sums\n";
+  }
+  return sums;
 }

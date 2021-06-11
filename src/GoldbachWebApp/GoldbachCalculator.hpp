@@ -3,7 +3,6 @@
 #ifndef GOLDBACHCALCULATOR_HPP
 #define GOLDBACHCALCULATOR_HPP
 
-#include <mutex>
 #include <string>
 #include <vector>
 
