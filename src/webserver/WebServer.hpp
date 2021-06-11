@@ -4,6 +4,7 @@
 #define WEBSERVER_H
 
 #include "HttpServer.hpp"
+#include "GoldbachWebApp.hpp"
 
 #define DEFAULT_PORT "8080"
 
@@ -13,6 +14,7 @@ class WebServer : public HttpServer {
  private:
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
+  GoldbachWebApp webApp;
 
  public:
   /// Constructor
@@ -34,14 +36,6 @@ class WebServer : public HttpServer {
   /// Route, that provide an answer according to the URI value
   /// For example, home page is handled different than a number
   bool route(HttpRequest& httpRequest, HttpResponse& httpResponse);
-  /// Sends the homepage as HTTP response
-  bool serveHomepage(HttpRequest& httpRequest, HttpResponse& httpResponse);
-  /// Sends a page for a non found resouce in this server
-  bool serveNotFound(HttpRequest& httpRequest, HttpResponse& httpResponse);
-  /// Calculate the prime factorization of a number asked by the client, and
-  /// sends the response in HTML format as HTTP response
-  bool serveGoldbachSums(HttpRequest& httpRequest
-    , HttpResponse& httpResponse, int64_t number);
 };
 
 #endif  // WEBSERVER_H
