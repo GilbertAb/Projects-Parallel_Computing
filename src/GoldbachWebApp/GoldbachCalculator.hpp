@@ -9,12 +9,12 @@
 class GoldbachCalculator {
  private:
     bool isPrime(int64_t number);
-    std::string strongGoldbach(int64_t number);
-    std::string weakGoldbach(int64_t number);
+    std::vector<std::string> strongGoldbach(int64_t number);
+    std::vector<std::string> weakGoldbach(int64_t number);
 
  public:
     GoldbachCalculator();
     ~GoldbachCalculator();
-    std::vector<std::string> getGoldbachSums(std::vector<int64_t> numbers);
+    std::vector<std::vector<std::string>> getGoldbachSums(std::vector<int64_t> numbers);
 };
 #endif  // GOLDBACHCALCULATOR_HPP
