@@ -55,9 +55,6 @@ std::vector<std::string> GoldbachCalculator::strongGoldbach(int64_t number) {
     }
   }
   sums[0] += ": " + std::to_string(sum_count)+" sums";
-  if (show_sums) {
-    sums[0] += ":";
-  }
   return sums;
 }
 
@@ -83,8 +80,5 @@ std::vector<std::string> GoldbachCalculator::weakGoldbach(int64_t number) {
     }
   }
   sums[0] += ": " + std::to_string(sum_count)+" sums";
-  if (show_sums) {
-    sums[0] += ":";
-  }
   return sums;
 }
