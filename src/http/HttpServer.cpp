@@ -10,6 +10,8 @@
 #include "Socket.hpp"
 
 HttpServer::HttpServer() {
+  this->socketQueue = new Queue<Socket>;
+  this->handler = new HttpRequestHandler(socketQueue);
 }
 
 HttpServer::~HttpServer() {
@@ -22,7 +24,7 @@ void HttpServer::listenForever(const char* port) {
 void HttpServer::handleClientConnection(Socket& client) {
   // TODO(you): Make this method concurrent. Store client connections (sockets)
   // into a collection (e.g thread-safe queue) and stop
-
+  handler->produce(client);
   // TODO(you) Move the following loop to a consumer thread class
   // While the same client asks for HTTP requests in the same connection
   while (true) {

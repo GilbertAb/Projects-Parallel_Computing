@@ -5,7 +5,10 @@
 
 #include "TcpServer.hpp"
 #include "HttpRequest.hpp"
+#include "HttpRequestHandler.hpp"
 #include "HttpResponse.hpp"
+#include "Queue.hpp"
+#include "Socket.hpp"
 
 class HttpServer : public TcpServer {
   DISABLE_COPY(HttpServer);
@@ -13,7 +16,12 @@ class HttpServer : public TcpServer {
  protected:
   /// Lookup criteria for searching network information about this host
   struct addrinfo hints;
-
+  /// Queue with the connection sockets
+  Queue<Socket>* socketQueue;
+  /// Producer that puts the sockets in the queue
+  HttpRequestHandler* handler;
+  
+  
  public:
   /// Constructor
   HttpServer();
