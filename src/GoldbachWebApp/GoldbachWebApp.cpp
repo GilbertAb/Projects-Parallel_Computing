@@ -49,7 +49,7 @@ void GoldbachWebApp::serveGoldbachSums(HttpResponse& httpResponse, std::vector<i
       << "  <p>" << sums[index][0] <<"</p>\n";
     if(sums[index].size() > 1) {
       httpResponse.body() << "  <ol>\n";
-      for(size_t sum_index; sum_index < sums[index].size(); ++sum_index) {
+      for(size_t sum_index = 1; sum_index < sums[index].size(); ++sum_index) {
         httpResponse.body() << "    <li>" <<sums[index][sum_index] << "</li>\n";
       }
       httpResponse.body() << "  </ol>\n";
@@ -70,7 +70,7 @@ void GoldbachWebApp::serveHomepage(HttpResponse& httpResponse) {
     << "  <h1>" << title << "</h1>\n"
     << "  <form method=\"get\" action=\"/goldbach\">\n"
     << "    <label for=\"number\">Number</label>\n"
-    << "    <input type=\"number\" name=\"number\" required/>\n"
+    << "    <input type=\"text\" name=\"numbers\" required/>\n"
     << "    <button type=\"submit\">Calculate</button>\n"
     << "  </form>\n"
     << "</html>\n";
