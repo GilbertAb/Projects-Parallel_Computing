@@ -82,28 +82,29 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
   }
   std::smatch matches;
 
-  // TODO(you): Numbers given by user may be larger than int64_t, reject them
-
   // If a number was asked in the form "/goldbach/1223"
   // or "/goldbach?number=1223"
-  
-  std::regex inQuery("^/goldbach(/|\\?numbers=)(-?\\d+(%2C-?\\d*)*)$");
-  if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
-    assert(matches.length() >= 3);
-    std::vector<int64_t> numbers;
-    std::string numberstr = matches.str(2);
-    for(size_t i = 0; !numberstr.empty(); ++i) {
-      numbers.push_back(std::stoll(numberstr));
-      while((numberstr[0] <= '9' && numberstr[0] >= '0') || numberstr[0] == '-') {
-        numberstr = numberstr.substr(1, numberstr.size() -1);
+  try {
+    std::regex inQuery("^/goldbach(/|\\?numbers=)(-?\\d+(%2C-?\\d*)*)$");
+    if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
+      assert(matches.length() >= 3);
+      std::vector<int64_t> numbers;
+      std::string numberstr = matches.str(2);
+      for(size_t i = 0; !numberstr.empty(); ++i) {
+        numbers.push_back(std::stoll(numberstr));
+        while((numberstr[0] <= '9' && numberstr[0] >= '0') || numberstr[0] == '-') {
+          numberstr = numberstr.substr(1, numberstr.size() -1);
+        }
+        if (numberstr.size() > 3) {
+          numberstr = numberstr.substr(3, numberstr.size() -3);
+        } else {
+          numberstr.clear();
+        }
       }
-      if (numberstr.size() > 3) {
-        numberstr = numberstr.substr(3, numberstr.size() -3);
-      } else {
-        numberstr.clear();
-      }
+      return webApp.serve(httpResponse, SUMS, numbers);
     }
-    return webApp.serve(httpResponse, SUMS, numbers);
+  } catch (const std::out_of_range& oor) {
+      return webApp.serve(httpResponse, NOT_FOUND);
   }
   // Unrecognized request
   return webApp.serve(httpResponse, NOT_FOUND);
