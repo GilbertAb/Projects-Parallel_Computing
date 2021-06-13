@@ -47,6 +47,8 @@ class HttpResponse : public HttpMessage {
   /// @return true on success, false on error or connection closed by peer
   bool send();
 
+  void setHttpVersion(std::string httpVersion);
+
  protected:
   /// Build the "Content-Type" and "Content-Length" metadata to the peer if
   /// there are already in the headers associative array. It tries to get these

@@ -41,7 +41,6 @@ class HttpMessage {
   /// Connection with client to receive or send HTTP data
   Socket socket;
   /// HTTP version, e.g: HTTP/1.0, HTTP/1.1
-  /// TODO(you) Handle requests concurrently. Match HTTP version used by client
   /// TODO(any) HTTP/2.0 and newer versions are not supported
   std::string httpVersion = "HTTP/1.0";
   /// HTTP message headers (pairs key=value)

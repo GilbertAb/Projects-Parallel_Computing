@@ -101,6 +101,10 @@ std::string HttpResponse::buildStatusLine() const {
     + this->reasonPhrase;
 }
 
+void HttpResponse::setHttpVersion(std::string httpVersion) {
+  this->httpVersion = httpVersion;
+}
+
 // {Code, "Reason-Phrase"}
 const HttpResponse::ReasonPhrases HttpResponse::reasonPhrases = {
   {100, "Continue"},

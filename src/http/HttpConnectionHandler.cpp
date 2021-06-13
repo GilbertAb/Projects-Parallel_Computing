@@ -34,10 +34,11 @@ void HttpConnectionHandler::consume(const Socket& client) {
       // be processed. Just stop waiting for more requests
       break;
     }
-
     // A complete HTTP client request was received. Create an object for the
     // server responds to that client's request
     HttpResponse httpResponse(cpyClient);
+    //match http version used in client request
+    httpResponse.setHttpVersion(httpRequest.getHttpVersion());
 
     // Give subclass a chance to respond the HTTP request
     
