@@ -29,7 +29,7 @@ WebServer* WebServer::getInstance() {
 }
 
 WebServer::WebServer() {
- 
+
 }
 
 WebServer::~WebServer() {
@@ -50,12 +50,16 @@ int WebServer::start(int argc, char* argv[]) {
         this->consumers[index]->setConsumingQueue(this->socketQueue);
         this->consumers[index]->startThread();
       }
-
+      
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
       std::cout << "web server listening on " << address.getIP()
         << " port " << address.getPort() << "...\n";
       this->acceptAllConnections();
+    
+      for ( size_t index = 0; index < this->consumerCount; ++index ) {
+        this->consumers[index]->waitToFinish();
+      }
     }
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;
