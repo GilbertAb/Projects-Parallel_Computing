@@ -11,17 +11,23 @@
 class WebServer : public HttpServer {
   DISABLE_COPY(WebServer);
 
- private:
+  private:
+    /// singleton instance
+    static WebServer* instance;    
+    /// Constructor
+    WebServer();
+    /// Destructor
+    ~WebServer();
+  
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
   GoldbachWebApp webApp;
   size_t consumerCount = 0;
 
  public:
-  /// Constructor
-  WebServer();
-  /// Destructor
-  ~WebServer();
+  /// Get access to the unique instance of this Singleton class
+  static WebServer* getInstance();
+  
   /// Start the simulation
   int start(int argc, char* argv[]);
 

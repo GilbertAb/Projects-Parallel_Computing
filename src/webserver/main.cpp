@@ -6,7 +6,8 @@
 #include "WebServer.hpp"
 
 int main(int argc, char* argv[]) {
-  return WebServer().start(argc, argv);
+  WebServer* webServer = WebServer::getInstance();
+  return webServer->start(argc, argv);
 }
 
 #endif  // WEBSERVER
