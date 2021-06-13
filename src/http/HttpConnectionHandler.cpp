@@ -4,8 +4,10 @@
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
 #include "Log.hpp"
+#include "Socket.hpp"
 
-HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer){
+HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer, 
+Socket stopCondition) : Consumer(nullptr, stopCondition, false){
   this->httpServer = httpServer;
 }
 

@@ -36,16 +36,34 @@ WebServer::~WebServer() {
 
 }
 
+void WebServer::stopConsumers(){
+  for( size_t index = 0; index < this->consumerCount; ++index ){
+    Socket socket;
+    this->socketQueue->push(socket);
+  }
+  for ( size_t index = 0; index < this->consumerCount; ++index ) {
+    this->consumers[index]->waitToFinish();
+  }
+}
+
+void WebServer::handleSignal(){
+  WebServer::stopListening();
+  WebServer::stopConsumers();
+  
+}
+
 int WebServer::start(int argc, char* argv[]) {
+  Socket stopCondition;
   try {
     if (this->analyzeArguments(argc, argv)) {
       // TODO(you) Handle signal 2 (SIGINT) and 15 (SIGTERM), see man signal
       // Signal handler should call WebServer::stopListening(), send stop
       // conditions and wait for all secondary threads that it created
-
+      
+     
       this->consumers.resize(this->consumerCount);
       for ( size_t index = 0; index < this->consumerCount; ++index ) {
-        this->consumers[index] = new HttpConnectionHandler(this);
+        this->consumers[index] = new HttpConnectionHandler(this,stopCondition);
         assert(this->consumers[index]);
         this->consumers[index]->setConsumingQueue(this->socketQueue);
         this->consumers[index]->startThread();
@@ -57,9 +75,9 @@ int WebServer::start(int argc, char* argv[]) {
         << " port " << address.getPort() << "...\n";
       this->acceptAllConnections();
     
-      for ( size_t index = 0; index < this->consumerCount; ++index ) {
+      /*for ( size_t index = 0; index < this->consumerCount; ++index ) {
         this->consumers[index]->waitToFinish();
-      }
+      }*/
     }
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;

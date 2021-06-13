@@ -30,6 +30,12 @@ class WebServer : public HttpServer {
   
   /// Start the simulation
   int start(int argc, char* argv[]);
+  
+  /// Finish execution
+  void handleSignal();
+  
+  /// Stop consumers
+  void stopConsumers();
 
  protected:
   /// Analyze the command line arguments
