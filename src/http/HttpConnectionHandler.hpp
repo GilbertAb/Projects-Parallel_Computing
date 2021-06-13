@@ -5,17 +5,22 @@
 
 #include "Consumer.hpp"
 #include "Socket.hpp"
+#include "HttpServer.hpp"
+
+class HttpServer;
 
 class HttpConnectionHandler : public Consumer<Socket> {
   DISABLE_COPY(HttpConnectionHandler);
+  protected:
+  HttpServer* httpServer;
     
   public:
     // Constructor
-    explicit HttpConnectionHandler();
+    explicit HttpConnectionHandler(HttpServer* httpServer);
     // Consume the messages in its own execution thread
     int run() override;
     // Override this method to process any data extracted from the queue
-    void consume(const Socket client) override;
+    void consume(const Socket& client) override;
 };
 
 #endif  // HTTPCONNECTIONHANDLER_HPP

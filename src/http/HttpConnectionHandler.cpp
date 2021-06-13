@@ -3,11 +3,10 @@
 #include "HttpConnectionHandler.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
-
 #include "Log.hpp"
 
-HttpConnectionHandler::HttpConnectionHandler(){
-
+HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer){
+  this->httpServer = httpServer;
 }
 
 int HttpConnectionHandler::run() {
@@ -22,11 +21,11 @@ int HttpConnectionHandler::run() {
   return EXIT_SUCCESS;
 }
 
-void HttpConnectionHandler::consume(const Socket client) {
-  
+void HttpConnectionHandler::consume(const Socket& client) {
+  Socket cpyClient = client;
   while (true) {
     // Create an object that parses the HTTP request from the socket
-    HttpRequest httpRequest(client);
+    HttpRequest httpRequest(cpyClient);
 
     // If the request is not valid or an error happened
     if (!httpRequest.parse()) {
@@ -38,19 +37,18 @@ void HttpConnectionHandler::consume(const Socket client) {
 
     // A complete HTTP client request was received. Create an object for the
     // server responds to that client's request
-    HttpResponse httpResponse(client);
+    HttpResponse httpResponse(cpyClient);
 
     // Give subclass a chance to respond the HTTP request
     
-    // TODO: make this work
-    /* const bool handled = handleHttpRequest(httpRequest, httpResponse);
+    const bool handled = httpServer->handleHttpRequest(httpRequest, httpResponse);
 
     // If subclass did not handle the request or the client used HTTP/1.0
     if (!handled || httpRequest.getHttpVersion() == "HTTP/1.0") {
       // The socket will not be more used, close the connection
-      client.close();
+      cpyClient.close();
       break;
-    }*/
+    }
 
   }
   

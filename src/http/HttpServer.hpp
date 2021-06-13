@@ -5,10 +5,12 @@
 
 #include "TcpServer.hpp"
 #include "HttpRequest.hpp"
-#include "HttpRequestHandler.hpp"
 #include "HttpResponse.hpp"
 #include "Queue.hpp"
 #include "Socket.hpp"
+#include "HttpConnectionHandler.hpp"
+
+class HttpConnectionHandler;
 
 class HttpServer : public TcpServer {
   DISABLE_COPY(HttpServer);
@@ -19,7 +21,9 @@ class HttpServer : public TcpServer {
   /// Queue with the connection sockets
   Queue<Socket>* socketQueue;
   /// Producer that puts the sockets in the queue
-  HttpRequestHandler* handler;
+  //HttpRequestHandler* handler;
+  
+  std::vector<HttpConnectionHandler*> consumers;
   
   
  public:
@@ -31,11 +35,7 @@ class HttpServer : public TcpServer {
   /// For each accepted connection request, the virtual onConnectionAccepted()
   /// will be called. Inherited classes must override that method
   void listenForever(const char* port);
-
- protected:
-  /// This method is called each time a client connection request is accepted.
-  void handleClientConnection(Socket& client) override;
-  /// Called each time an HTTP request is received. Web server should analyze
+    /// Called each time an HTTP request is received. Web server should analyze
   /// the request object and assemble a response with the response object.
   /// Finally send the response calling the httpResponse.send() method.
   /// @return true on success and the server will continue handling further
@@ -43,6 +43,11 @@ class HttpServer : public TcpServer {
   /// this client (e.g: HTTP/1.0)
   virtual bool handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) = 0;
+
+ protected:
+  /// This method is called each time a client connection request is accepted.
+  void handleClientConnection(Socket& client) override;
+
 };
 
 #endif  // HTTPSERVER_H

@@ -15,6 +15,7 @@ class WebServer : public HttpServer {
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
   GoldbachWebApp webApp;
+  size_t consumerCount = 0;
 
  public:
   /// Constructor

@@ -30,6 +30,15 @@ int WebServer::start(int argc, char* argv[]) {
       // TODO(you) Handle signal 2 (SIGINT) and 15 (SIGTERM), see man signal
       // Signal handler should call WebServer::stopListening(), send stop
       // conditions and wait for all secondary threads that it created
+
+      this->consumers.resize(this->consumerCount);
+      for ( size_t index = 0; index < this->consumerCount; ++index ) {
+        this->consumers[index] = new HttpConnectionHandler(this);
+        assert(this->consumers[index]);
+        this->consumers[index]->setConsumingQueue(this->socketQueue);
+        this->consumers[index]->startThread();
+      }
+
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
       std::cout << "web server listening on " << address.getIP()
@@ -55,6 +64,7 @@ bool WebServer::analyzeArguments(int argc, char* argv[]) {
 
   if (argc >= 2) {
     this->port = argv[1];
+    this->consumerCount = std::stoll(argv[2]);
   }
 
   return true;
