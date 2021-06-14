@@ -6,13 +6,15 @@
 #include "WebServer.hpp"
 #include <signal.h>
 
-void handleFin(int signal){
+void handleSignal(int signal){
+  int temp_errno = errno;
   WebServer::getInstance()->stopListening();
+  errno = temp_errno;
 }
 
 int main(int argc, char* argv[]) {
-  signal(SIGINT, handleFin);
-  signal(SIGTERM, handleFin);
+  signal(SIGINT, handleSignal);
+  signal(SIGTERM, handleSignal);
   WebServer* webServer = WebServer::getInstance();
   return webServer->start(argc, argv);
 }
