@@ -24,7 +24,6 @@ WebServer* WebServer::getInstance() {
   if (instance == NULL) {
     instance = new WebServer();
   }
-  
   return instance;
 }
 
@@ -34,10 +33,6 @@ WebServer::~WebServer() {}
 int WebServer::start(int argc, char* argv[]) {
   try {
     if (this->analyzeArguments(argc, argv)) {
-      // TODO(you) Handle signal 2 (SIGINT) and 15 (SIGTERM), see man signal
-      // Signal handler should call WebServer::stopListening(), send stop
-      // conditions and wait for all secondary threads that it created
-     
       this->consumers.resize(this->consumerCount);
       for ( size_t index = 0; index < this->consumerCount; ++index ) {
         this->consumers[index] = new HttpConnectionHandler(this);
@@ -54,6 +49,7 @@ int WebServer::start(int argc, char* argv[]) {
     }
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;
+    /// clean exit if error detected
     stopConsumers();
   }
 
@@ -69,12 +65,12 @@ bool WebServer::analyzeArguments(int argc, char* argv[]) {
       return false;
     }
   }
-
   if (argc >= 2) {
     this->port = argv[1];
+  }
+  if (argc >= 3) {
     this->consumerCount = std::stoll(argv[2]);
   }
-
   return true;
 }
 
@@ -121,6 +117,7 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
       }
       return webApp.serve(httpResponse, SUMS, numbers);
     }
+    // number requested too big (2^63 or greater)
   } catch (const std::out_of_range& oor) {
       return webApp.serve(httpResponse, NOT_FOUND);
   }

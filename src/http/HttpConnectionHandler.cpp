@@ -14,13 +14,8 @@ HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer)
 int HttpConnectionHandler::run() {
   // Start the forever loop to consume all the messages that arrive
   this->consumeForever();
-  printf("stop\n");
 
-  // If the forever loop finished, no more messages will arrive
-  // Print statistics
-  /*Log::append(Log::INFO, "Consumer", std::to_string(this->receivedMessages)
-    + " menssages consumed");*/  
-  
+  // If the forever loop finished, no more client will arrive 
   return EXIT_SUCCESS;
 }
 
@@ -53,11 +48,5 @@ void HttpConnectionHandler::consume(const Socket& client) {
       cpyClient.close();
       break;
     }
-
   }
-  
-  // If the forever loop finished, no more messages will arrive
-  // Print statistics
-  /*Log::append(Log::INFO, "Consumer", std::to_string(this->receivedMessages)
-    + " menssages consumed");*/
 }

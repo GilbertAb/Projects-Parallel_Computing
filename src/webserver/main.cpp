@@ -7,6 +7,7 @@
 #include <signal.h>
 
 void handleSignal(int signal){
+  // adapted from https://stackoverflow.com/questions/48378213/how-to-deal-with-errno-and-signal-handler-in-linux
   int temp_errno = errno;
   WebServer::getInstance()->stopListening();
   errno = temp_errno;
