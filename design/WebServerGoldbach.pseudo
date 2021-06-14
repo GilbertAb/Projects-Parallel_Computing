@@ -1,33 +1,52 @@
-record WebServer
+// Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
+
+singleton record WebServer:
   start(argc, argv[]):
+    create_threads(consumer_count, run)
     listenForConnections()
     acceptAllConnections()
 
-record HttpServer
-  handleClientConnection(client):
-    produce(client)
-    
-record HttpRequestHandler
-  HttpRequestHandler(consumer_count):
-    create_threads(consumer_count, consume)
-  
-  consume():
-    client = queue.pop()
-    while true do
-      httpRequest(client)
-      if httpRequest.parse() = false then
-        break while
-      end if
-      httpResponse(client)
-      handled = handleHttpRequest(httpRequest, httpResponse)
-      if handled = false then
-        client.close()
-      end if
-    end while
-  
   handleHttpRequest(httpRequest, httpResponse):
+    if httpRequest.isValid then
+      if numbersRequested then
+        serveGoldbachSums()
+      else 
+        serveHomepage()
+      end if
+    else
+      serveNotFound()
+    end if
     
-    
-record GoldbachWebApp
 
-record GoldbachCalculator
+record HttpServer:
+consumer := array of HttpConnectionHandler
+shared socketQueue := queue of sockets
+
+  if connectionRequest then
+    handleClientConnection(client)
+  end if
+
+  handleClientConnection(client):
+    socketQueue.push(client)
+  
+record HttpConnectionHandler is Consumer:
+  run():
+    consumeForever()
+
+  consumeForever():
+  while true do
+    client := socketQueue.pop()
+    if client = stopCondition then
+      break
+    end if
+    consume(client)
+  end while
+
+  consume(client):
+    httpRequest(client)
+    httpRequest.parse()
+    httpResponse(client)
+    handled := handleHttpRequest(httpRequest, httpResponse)
+    if !handled then
+      client.close()
+    end if
