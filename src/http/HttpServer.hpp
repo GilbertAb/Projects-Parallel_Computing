@@ -28,6 +28,7 @@ class HttpServer : public TcpServer {
   ///concurrent connections
   size_t consumerCount = 10;
   /// Stop consumers
+  void startConsumers();
   void stopConsumers();
   
  public:

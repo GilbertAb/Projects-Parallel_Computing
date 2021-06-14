@@ -33,14 +33,7 @@ WebServer::~WebServer() {}
 int WebServer::start(int argc, char* argv[]) {
   try {
     if (this->analyzeArguments(argc, argv)) {
-      this->consumers.resize(this->consumerCount);
-      for ( size_t index = 0; index < this->consumerCount; ++index ) {
-        this->consumers[index] = new HttpConnectionHandler(this);
-        assert(this->consumers[index]);
-        this->consumers[index]->setConsumingQueue(this->socketQueue);
-        this->consumers[index]->startThread();
-      }
-      
+      this->startConsumers();
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
       std::cout << "web server listening on " << address.getIP()
@@ -60,7 +53,7 @@ bool WebServer::analyzeArguments(int argc, char* argv[]) {
   // Traverse all arguments
   for (int index = 1; index < argc; ++index) {
     const std::string argument = argv[index];
-    if (argument.find("help") != std::string::npos) {
+    if (argument.find("help") != std::string::npos || argc > 3) {
       std::cout << usage;
       return false;
     }
@@ -68,8 +61,13 @@ bool WebServer::analyzeArguments(int argc, char* argv[]) {
   if (argc >= 2) {
     this->port = argv[1];
   }
-  if (argc >= 3) {
-    this->consumerCount = std::stoll(argv[2]);
+  if (argc == 3) {
+    try {
+      this->consumerCount = std::stoll(argv[2]);
+    } catch (const std::exception& error) {
+      std::cerr << "error: invalid consumer count\n";
+      return false;
+    }
   }
   return true;
 }
