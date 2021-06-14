@@ -22,7 +22,6 @@ class WebServer : public HttpServer {
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
   GoldbachWebApp webApp;
-  size_t consumerCount = 1;
 
  public:
   /// Get access to the unique instance of this Singleton class
@@ -30,12 +29,6 @@ class WebServer : public HttpServer {
   
   /// Start the simulation
   int start(int argc, char* argv[]);
-  
-  /// Finish execution
-  void handleSignal();
-  
-  /// Stop consumers
-  void stopConsumers();
 
  protected:
   /// Analyze the command line arguments

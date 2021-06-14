@@ -6,14 +6,15 @@
 #include "Log.hpp"
 #include "Socket.hpp"
 
-HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer, 
-Socket stopCondition) : Consumer(nullptr, stopCondition, false){
+HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer)
+  : Consumer(nullptr, Socket(), false){
   this->httpServer = httpServer;
 }
 
 int HttpConnectionHandler::run() {
   // Start the forever loop to consume all the messages that arrive
   this->consumeForever();
+  printf("stop\n");
 
   // If the forever loop finished, no more messages will arrive
   // Print statistics

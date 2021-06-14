@@ -25,6 +25,10 @@ class HttpServer : public TcpServer {
   
   std::vector<HttpConnectionHandler*> consumers;
   
+  ///concurrent connections
+  size_t consumerCount = 10;
+  /// Stop consumers
+  void stopConsumers();
   
  public:
   /// Constructor

@@ -16,7 +16,7 @@ class HttpConnectionHandler : public Consumer<Socket> {
     
   public:
     // Constructor
-    explicit HttpConnectionHandler(HttpServer* httpServer, Socket stopCondition);
+    explicit HttpConnectionHandler(HttpServer* httpServer);
     // Consume the messages in its own execution thread
     int run() override;
     // Override this method to process any data extracted from the queue

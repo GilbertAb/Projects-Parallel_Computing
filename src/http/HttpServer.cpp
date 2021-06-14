@@ -24,3 +24,13 @@ void HttpServer::listenForever(const char* port) {
 void HttpServer::handleClientConnection(Socket& client) { 
   socketQueue->push(client);
 }
+
+void HttpServer::stopConsumers(){
+  for( size_t index = 0; index < this->consumerCount; ++index ){
+    Socket socket;
+    this->socketQueue->push(socket);
+  }
+  for ( size_t index = 0; index < this->consumerCount; ++index ) {
+    this->consumers[index]->waitToFinish();
+  }
+}

@@ -7,8 +7,7 @@
 #include <signal.h>
 
 void handleFin(int signal){
-  WebServer::getInstance()->handleSignal();
-  exit(signal);
+  WebServer::getInstance()->stopListening();
 }
 
 int main(int argc, char* argv[]) {
