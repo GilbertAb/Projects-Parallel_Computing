@@ -20,18 +20,18 @@ class HttpConnectionHandler : public Consumer<Socket> {
   explicit HttpConnectionHandler(HttpServer* httpServer, Socket stopCondition);
 
   /**
-  * @brief Start the forever loop to consume all the connections that arrive.
-  * @details Start the forever loop to consume all the sockets that arrive.
-  * If the forever loop finished, no more client will arrive 
+   * @brief Start the forever loop to consume all the connections that arrive.
+   * @details Start the forever loop to consume all the sockets that arrive.
+   * If the forever loop finished, no more client will arrive 
   */
   int run() override;
 
   /**
-  * @brief Handles a received HTTP client request and creates an object 
-  * for the server responds to that client's request.
-  * @details Creates an object that parses the HTTP request from the 
-  * socket, responds to the client request if it's valid.
-  * @param client The socket.
+   * @brief Handles a received HTTP client request and creates an object 
+   * for the server responds to that client's request.
+   * @details Creates an object that parses the HTTP request from the 
+   * socket, responds to the client request if it's valid.
+   * @param client The socket.
   */
   void consume(const Socket& client) override;
 };

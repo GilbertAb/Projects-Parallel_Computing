@@ -5,13 +5,6 @@
 GoldbachCalculator::GoldbachCalculator() {}
 GoldbachCalculator::~GoldbachCalculator() {}
 
-/**
- * @brief Verifies if a number is prime or not, then returns the result.
- * @details Verifies if a number is prime checking if it has more than 2 
- * divisors.
- * @param number The number that will be verified.
- * @return true if the number is prime or false if it's not.
- */
 bool GoldbachCalculator::isPrime(int64_t number) {
   bool prime = true;
   if (number % 2 == 0 && number > 2) {
@@ -25,21 +18,8 @@ bool GoldbachCalculator::isPrime(int64_t number) {
   return prime;
 }
 
-/**
- * @brief Returns a vector of strings filled with the Goldbach sums of 
- * the given numbers.
- * @details To fill the vector with the Goldbach sums of the numbers 
- * every number is checked to see if it has no sums, it's even or odd, 
- * then the goldbach sums will be calculated by strongGoldbach or 
- * weakGoldbach.
- * @param numbers The vector of numbers whose goldbach sums will be 
- * calculated.
- * @return a vector of strings filled with the goldbach sums of 
- * the given numbers.
- */
 std::vector<std::vector<std::string>> GoldbachCalculator
   ::getGoldbachSums(std::vector<int64_t> numbers) {
-
   size_t number_count = numbers.size();
   std::vector<std::vector<std::string>> numbers_sums(number_count);
 
@@ -57,16 +37,6 @@ std::vector<std::vector<std::string>> GoldbachCalculator
   return numbers_sums;
 }
 
-/**
- * @brief Calculates the amount of goldbach sums and returns a vector of 
- * strings filled (or not) with the Goldbach sums of the given number.
- * @details To fill the vector with the Goldbach sums of the number, it 
- * checks if the two numbers of the sum are prime. Also, is verified if 
- * the number is negative to determine if the sums will be showed.
- * @param numbers The number whose goldbach sums will be calculated 
- * @return a vector of strings filled with the goldbach sums of 
- * the given number.
- */
 std::vector<std::string> GoldbachCalculator::strongGoldbach(int64_t number) {
   bool show_sums = number < 0;
   size_t sum_count = 0;
@@ -88,16 +58,6 @@ std::vector<std::string> GoldbachCalculator::strongGoldbach(int64_t number) {
   return sums;
 }
 
-/**
- * @brief Calculates the amount of goldbach sums and returns a vector of 
- * strings filled (or not) with the Goldbach sums of the given number.
- * @details To fill the vector with the Goldbach sums of the number, it 
- * checks if the three numbers of the sum are prime. Also, is verified if 
- * the number is negative to determine if the sums will be showed.
- * @param numbers The number whose goldbach sums will be calculated 
- * @return a vector of strings filled with the goldbach sums of 
- * the given number.
- */
 std::vector<std::string> GoldbachCalculator::weakGoldbach(int64_t number) {
   bool show_sums = number < 0;
   size_t sum_count = 0;
