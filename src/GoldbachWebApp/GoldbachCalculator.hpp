@@ -23,7 +23,7 @@ class GoldbachCalculator {
    * @details To fill the vector with the Goldbach sums of the number, it 
    * checks if the two numbers of the sum are prime. Also, is verified if 
    * the number is negative to determine if the sums will be showed.
-   * @param numbers The number whose goldbach sums will be calculated 
+   * @param number The number whose goldbach sums will be calculated 
    * @return a vector of strings filled with the goldbach sums of 
    * the given number.
   */
@@ -35,7 +35,7 @@ class GoldbachCalculator {
    * @details To fill the vector with the Goldbach sums of the number, it 
    * checks if the three numbers of the sum are prime. Also, is verified if 
    * the number is negative to determine if the sums will be showed.
-   * @param numbers The number whose goldbach sums will be calculated 
+   * @param number The number whose goldbach sums will be calculated 
    * @return a vector of strings filled with the goldbach sums of 
    * the given number.
   */
