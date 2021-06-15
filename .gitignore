@@ -2,3 +2,4 @@ bin
 build
 src/.vscode
 src/html
+doc
