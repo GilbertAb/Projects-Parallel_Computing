@@ -11,16 +11,16 @@
 class WebServer : public HttpServer {
   DISABLE_COPY(WebServer);
 
-  private:
-    /// singleton instance
-    static WebServer* instance;    
-    /// Constructor
-    WebServer();
-    /// Destructor
-    ~WebServer();
-  
+ private:
+  /// Singleton instance
+  static WebServer* instance;    
+  /// Constructor
+  WebServer();
+  /// Destructor
+  ~WebServer();
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
+  /// Web app that handles the calculation of goldbach
   GoldbachWebApp webApp;
 
  public:

@@ -17,7 +17,7 @@ const char* const usage =
     DEFAULT_PORT "\n"
   "  max_connections  Maximum number of allowed client connections\n";
 
-/// singleton instance
+/// Singleton instance
 WebServer* WebServer::instance = nullptr;
 
 WebServer* WebServer::getInstance() {
@@ -42,7 +42,7 @@ int WebServer::start(int argc, char* argv[]) {
     }
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;
-    /// clean exit if error detected
+    /// Clean exit if error detected
     stopConsumers();
   }
 
@@ -50,7 +50,7 @@ int WebServer::start(int argc, char* argv[]) {
 }
 
 bool WebServer::analyzeArguments(int argc, char* argv[]) {
-  // Traverse all arguments
+  /// Traverse all arguments
   for (int index = 1; index < argc; ++index) {
     const std::string argument = argv[index];
     if (argument.find("help") != std::string::npos || argc > 3) {
@@ -74,12 +74,12 @@ bool WebServer::analyzeArguments(int argc, char* argv[]) {
 
 bool WebServer::handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) {
-  // Print IP and port from client
+  /// Print IP and port from client
   const NetworkAddress& address = httpRequest.getNetworkAddress();
   std::cout << "connection established with client " << address.getIP()
     << " port " << address.getPort() << std::endl;
 
-  // Print HTTP request
+  /// Print HTTP request
   std::cout << "  " << httpRequest.getMethod()
     << ' ' << httpRequest.getURI()
     << ' ' << httpRequest.getHttpVersion() << std::endl;
@@ -88,14 +88,14 @@ bool WebServer::handleHttpRequest(HttpRequest& httpRequest,
 }
 
 bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
-  // If the home page was asked
+  /// If the home page was asked
   if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/") {
     return webApp.serve(httpResponse, HOME_PAGE);
   }
   std::smatch matches;
 
-  // If a number was asked in the form "/goldbach/1223"
-  // or "/goldbach?number=1223"
+  /// If a number was asked in the form "/goldbach/1223"
+  /// or "/goldbach?number=1223"
   try {
     std::regex inQuery("^/goldbach(/|\\?numbers=)(-?\\d+(%2C-?\\d*)*)$");
     if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
@@ -115,10 +115,10 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
       }
       return webApp.serve(httpResponse, SUMS, numbers);
     }
-    // number requested too big (2^63 or greater)
+    /// Number requested too big (2^63 or greater)
   } catch (const std::out_of_range& oor) {
       return webApp.serve(httpResponse, NOT_FOUND);
   }
-  // Unrecognized request
+  /// Unrecognized request
   return webApp.serve(httpResponse, NOT_FOUND);
 }

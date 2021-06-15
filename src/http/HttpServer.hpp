@@ -21,14 +21,13 @@ class HttpServer : public TcpServer {
   /// Queue with the connection sockets
   Queue<Socket> socketQueue;
   /// Producer that puts the sockets in the queue
-  //HttpRequestHandler* handler;
-  
+  /// HttpRequestHandler* handler;
   std::vector<HttpConnectionHandler*> consumers;
-  
-  ///concurrent connections
+  /// Concurrent connections
   size_t consumerCount = 10;
-  /// Stop consumers
+  /// Sends the stop condition, set the consumimg queue and starts the thread
   void startConsumers();
+  /// Stops the consumers
   void stopConsumers();
   
  public:
