@@ -11,6 +11,7 @@ class HttpServer;
 
 class HttpConnectionHandler : public Consumer<Socket> {
   DISABLE_COPY(HttpConnectionHandler);
+
  protected:
   HttpServer* httpServer;
 

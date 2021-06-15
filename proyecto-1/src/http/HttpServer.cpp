@@ -17,11 +17,11 @@ void HttpServer::listenForever(const char* port) {
   return TcpServer::listenForever(port);
 }
 
-void HttpServer::handleClientConnection(Socket& client) { 
+void HttpServer::handleClientConnection(Socket& client) {
   socketQueue.push(client);
 }
 
-void HttpServer::startConsumers(){
+void HttpServer::startConsumers() {
   Socket stopCondition;
   this->consumers.resize(this->consumerCount);
   for ( size_t index = 0; index < this->consumerCount; ++index ) {
@@ -32,8 +32,8 @@ void HttpServer::startConsumers(){
   }
 }
 
-void HttpServer::stopConsumers(){
-  for( size_t index = 0; index < this->consumerCount; ++index ){
+void HttpServer::stopConsumers() {
+  for ( size_t index = 0; index < this->consumerCount; ++index ) {
     Socket socket;
     this->socketQueue.push(socket);
   }

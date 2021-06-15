@@ -3,12 +3,13 @@
 
 #ifdef WEBSERVER
 
-#include "WebServer.hpp"
 #include <signal.h>
+#include "WebServer.hpp"
 
 /// Tells the program how to handle the signal for program termination
-void handleSignal(int signal){
-  // adapted from https://stackoverflow.com/questions/48378213/how-to-deal-with-errno-and-signal-handler-in-linux
+void handleSignal(int signal) {
+  /* adapted from https://stackoverflow.com/questions/48378213/how-to
+   -deal-with-errno-and-signal-handler-in-linux */
   int temp_errno = errno;
   WebServer::getInstance()->stopListening();
   errno = temp_errno;

@@ -3,6 +3,7 @@
 #ifndef WEBSERVER_H
 #define WEBSERVER_H
 
+#include <vector>
 #include "HttpServer.hpp"
 #include "GoldbachWebApp.hpp"
 
@@ -13,7 +14,7 @@ class WebServer : public HttpServer {
 
  private:
   /// Singleton instance
-  static WebServer* instance;    
+  static WebServer* instance;
   /// Constructor
   WebServer();
   /// Destructor
@@ -26,7 +27,7 @@ class WebServer : public HttpServer {
  public:
   /// Get access to the unique instance of this Singleton class
   static WebServer* getInstance();
-  
+
   /// Start the simulation
   int start(int argc, char* argv[]);
 

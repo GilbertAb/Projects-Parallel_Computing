@@ -3,6 +3,7 @@
 #ifndef HTTPSERVER_H
 #define HTTPSERVER_H
 
+#include <vector>
 #include "TcpServer.hpp"
 #include "HttpRequest.hpp"
 #include "HttpResponse.hpp"
@@ -29,7 +30,7 @@ class HttpServer : public TcpServer {
   void startConsumers();
   /// Stops the consumers
   void stopConsumers();
-  
+
  public:
   /// Constructor
   HttpServer();
@@ -51,7 +52,6 @@ class HttpServer : public TcpServer {
  protected:
   /// This method is called each time a client connection request is accepted.
   void handleClientConnection(Socket& client) override;
-
 };
 
 #endif  // HTTPSERVER_H

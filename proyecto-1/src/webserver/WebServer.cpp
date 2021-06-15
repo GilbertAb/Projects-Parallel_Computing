@@ -102,9 +102,10 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
       assert(matches.length() >= 3);
       std::vector<int64_t> numbers;
       std::string numberstr = matches.str(2);
-      for(size_t i = 0; !numberstr.empty(); ++i) {
+      for (size_t i = 0; !numberstr.empty(); ++i) {
         numbers.push_back(std::stoll(numberstr));
-        while((numberstr[0] <= '9' && numberstr[0] >= '0') || numberstr[0] == '-') {
+        while ((numberstr[0] <= '9' && numberstr[0] >= '0')
+          || numberstr[0] == '-') {
           numberstr = numberstr.substr(1, numberstr.size() -1);
         }
         if (numberstr.size() > 3) {

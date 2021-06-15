@@ -25,8 +25,8 @@
  */
 class GoldbachWebApp {
  private:
-  GoldbachCalculator calculator;  /** Model class instance for number processing*/
-  
+  GoldbachCalculator calculator; /**Model class instance for number processing*/
+
   /**
   * @brief Builds a respond page with the goldbach sums asked by user. 
   * First gets the goldbach sums from the model class instance and then parses them
@@ -34,7 +34,8 @@ class GoldbachWebApp {
   * @param httpResponse The response to be built and sent to the client
   * @param numbers Dynamic array containing the numbers whose goldbach sums were asked by user
   */
-  void serveGoldbachSums(HttpResponse& httpResponse, std::vector<int64_t> numbers);
+  void serveGoldbachSums(HttpResponse& httpResponse
+    , std::vector<int64_t> numbers);
 
     /**
   * @brief Builds a respond page with the homepage of the aplication. 
