@@ -15,6 +15,7 @@ class GoldbachCalculator {
  public:
     GoldbachCalculator();
     ~GoldbachCalculator();
-    std::vector<std::vector<std::string>> getGoldbachSums(std::vector<int64_t> numbers);
+    std::vector<std::vector<std::string>> getGoldbachSums(
+      std::vector<int64_t> numbers);
 };
 #endif  // GOLDBACHCALCULATOR_HPP
