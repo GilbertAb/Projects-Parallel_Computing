@@ -6,8 +6,8 @@
 #include "Log.hpp"
 #include "Socket.hpp"
 
-HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer)
-  : Consumer(nullptr, Socket(), false){
+HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer
+  , Socket stopCondition) : Consumer(nullptr, stopCondition, false){
   this->httpServer = httpServer;
 }
 

@@ -19,7 +19,7 @@ class HttpServer : public TcpServer {
   /// Lookup criteria for searching network information about this host
   struct addrinfo hints;
   /// Queue with the connection sockets
-  Queue<Socket>* socketQueue;
+  Queue<Socket> socketQueue;
   /// Producer that puts the sockets in the queue
   //HttpRequestHandler* handler;
   
