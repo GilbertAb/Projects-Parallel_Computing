@@ -29,19 +29,27 @@ class WebServer : public HttpServer {
   static WebServer* getInstance();
 
   /// Start the simulation
+  /// @param Recives the arguments and the number of them written by the user
   int start(int argc, char* argv[]);
 
  protected:
   /// Analyze the command line arguments
+  /// @param Recives the arguments and the number of them written by the user
   /// @return true if program can continue execution, false otherwise
   bool analyzeArguments(int argc, char* argv[]);
   /// Handle HTTP requests. @see HttpServer::handleHttpRequest()
+  /// @param Gets the users request and the response that will be modified by
+  /// the program.
+  /// @return true on success and the server will continue handling requests
   bool handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse) override;
 
  protected:
   /// Route, that provide an answer according to the URI value
   /// For example, home page is handled different than a number
+  /// @param Gets the users request and the response that will be modified by
+  /// the program.
+  /// @return true on success and the server will continue handling requests
   bool route(HttpRequest& httpRequest, HttpResponse& httpResponse);
 };
 
