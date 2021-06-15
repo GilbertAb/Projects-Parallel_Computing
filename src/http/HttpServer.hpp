@@ -50,6 +50,7 @@ class HttpServer : public TcpServer {
 
  protected:
   /// This method is called each time a client connection request is accepted.
+  /// @param Recives the socket for the client
   void handleClientConnection(Socket& client) override;
 
 };
