@@ -33,7 +33,7 @@ Al ejecutar el programa se puede enviar como primer argumento el puerto y como e
 ### Ejemplo de uso
 
 #### Entrada
-![Multiple numbers input example](/img/InputExample.png "Multiple numbers input example")
+![Multiple numbers input example](./img/InputExample.png "Multiple numbers input example")
 
 #### Salida
-![Multiple numbers output example](/img/OutputExample.png "Multiple numbers output example")
+![Multiple numbers output example](./img/OutputExample.png "Multiple numbers output example")
