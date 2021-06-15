@@ -11,16 +11,29 @@ class HttpServer;
 
 class HttpConnectionHandler : public Consumer<Socket> {
   DISABLE_COPY(HttpConnectionHandler);
-  protected:
+ protected:
   HttpServer* httpServer;
-    
-  public:
-    // Constructor
-    explicit HttpConnectionHandler(HttpServer* httpServer, Socket stopCondition);
-    // Consume the messages in its own execution thread
-    int run() override;
-    // Override this method to process any data extracted from the queue
-    void consume(const Socket& client) override;
+
+ public:
+  /** Constructor. Initializes httpServer.
+  */
+  explicit HttpConnectionHandler(HttpServer* httpServer, Socket stopCondition);
+
+  /**
+  * @brief Start the forever loop to consume all the connections that arrive.
+  * @details Start the forever loop to consume all the sockets that arrive.
+  * If the forever loop finished, no more client will arrive 
+  */
+  int run() override;
+
+  /**
+  * @brief Handles a received HTTP client request and creates an object 
+  * for the server responds to that client's request.
+  * @details Creates an object that parses the HTTP request from the 
+  * socket, responds to the client request if it's valid.
+  * @param client The socket.
+  */
+  void consume(const Socket& client) override;
 };
 
 #endif  // HTTPCONNECTIONHANDLER_HPP

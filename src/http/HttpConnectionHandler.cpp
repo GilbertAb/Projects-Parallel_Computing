@@ -7,15 +7,15 @@
 #include "Socket.hpp"
 
 HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer
-  , Socket stopCondition) : Consumer(nullptr, stopCondition, false){
+  , Socket stopCondition) : Consumer(nullptr, stopCondition, false) {
   this->httpServer = httpServer;
 }
 
 int HttpConnectionHandler::run() {
-  // Start the forever loop to consume all the messages that arrive
+  // Start the forever loop to consume all the connections that arrive
   this->consumeForever();
 
-  // If the forever loop finished, no more client will arrive 
+  // If the forever loop finished, no more client will arrive
   return EXIT_SUCCESS;
 }
 
@@ -35,12 +35,13 @@ void HttpConnectionHandler::consume(const Socket& client) {
     // A complete HTTP client request was received. Create an object for the
     // server responds to that client's request
     HttpResponse httpResponse(cpyClient);
-    //match http version used in client request
+    // Match http version used in client request
     httpResponse.setHttpVersion(httpRequest.getHttpVersion());
 
     // Give subclass a chance to respond the HTTP request
-    
-    const bool handled = httpServer->handleHttpRequest(httpRequest, httpResponse);
+
+    const bool handled = httpServer->handleHttpRequest(httpRequest,
+      httpResponse);
 
     // If subclass did not handle the request or the client used HTTP/1.0
     if (!handled || httpRequest.getHttpVersion() == "HTTP/1.0") {
