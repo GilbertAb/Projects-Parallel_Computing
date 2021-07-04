@@ -19,16 +19,12 @@ void Island::get_job(const char* filename) {
   {
       directory = sfilename.substr(0, last_slash_pos + 1);
   }
-
-  // TODO(any) make string instead of char buffer
   std::string map_name;
   int64_t days;
-
-  std::fstream fstream;
+  std::fstream fstream = std::fstream();
   fstream.open(filename, std::ios::in);
-  std::string job_line;
+  std::string job_line = "";
   char buffer[256];
-  
   while (std::getline(fstream, job_line)) {
     std::sscanf(job_line.c_str(), "%s%ld", buffer, &days);
     map_name.assign(buffer, strlen(buffer));
@@ -56,10 +52,10 @@ void Island::create_forest(std::string map_path, std::string map_name, int64_t d
 }
 
 void Island::simulate_days(std::string output_directory_path) {
-  // TODO(any) make this loop concurrent
+  // TODO(GILBERT.MARQUEZ) make this loop concurrent
   for (size_t index = 0; index < forest.size(); ++index) {
     std::fstream fstream;
-    // TODO(any) find a more according name for print_all flag
+    // TODO(DAVID.ATIAS) find a more according name for print_all flag
     size_t print_all = 0;
 
     if (days[index] < 0) {
@@ -80,8 +76,7 @@ void Island::simulate_days(std::string output_directory_path) {
   }
 }
 
-// TODO(any) receive path as command argument
-
+// TODO(DAVID.ATIAS) verify output folder is created or warn if it isnt or ask Jeisson
 std::string Island::create_output_directory(std::string job_path) {
   std::string output_directory = job_path;
   output_directory = output_directory.substr(0, output_directory.rfind("input"));

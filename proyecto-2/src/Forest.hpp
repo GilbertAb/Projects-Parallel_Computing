@@ -8,7 +8,6 @@
 
 class Forest {
  private:
-  // TODO(any) change map_name for map_path wherever needed
   std::string map_name;
   size_t rows;
   size_t columns;

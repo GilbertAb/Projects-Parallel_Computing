@@ -3,11 +3,12 @@
 #include "Forest.hpp"
 #include <iostream>
 
-//TODO(all) Find a better way to store displacement arrays
+//TODO(KEVIN) Find a better way to store displacement arrays or ask Jeisson if its ok
 const char row_dis[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
 const char col_dis[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 
 Forest::Forest(size_t rows, size_t columns, std::string map_name) {
+  map = NULL;
   this->map_name = map_name;
   init_forest(rows, columns);
   this->rows = rows;
