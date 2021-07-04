@@ -1,157 +1,124 @@
-// Copyright 2021 Gilbert Marquez Aldana <gilbert.marquez@ucr.ac.cr>
+// Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
 #include "Forest.hpp"
+#include <iostream>
 
-using namespace std;
+//TODO(all) Find a better way to store displacement arrays
+const char const row_dis[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
+const char const col_dis[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 
-const std::string DIRECTIONS[] = {"N","NE","E","SE","S","SO","O","NO"};
-const int SUMROW[] = {-1, -1, 0, 1, 1, 1, 0, -1};
-const int SUMCOL[] = {0, 1, 1, 1, 0, -1, -1, -1};
-#define NUMDIRECTIONS 8
-
-Forest::Forest() {
-  this->rowsCount = 0;
-  this->columnsCount = 0;
-}
-Forest::Forest(int rowsCount, int columnsCount) {
-  this->rowsCount = rowsCount;
-  this->columnsCount = columnsCount;
-
-  map = createMatrix(rowsCount, columnsCount);
-  mapCopy = createMatrix(rowsCount, columnsCount);
+Forest::Forest(size_t rows, size_t columns, const char* map_name) {
+  this->map_name = map_name;
+  init_forest(rows, columns);
+  this->rows = rows;
+  this->columns = columns;
 }
 
 Forest::~Forest() {
-  freeMatrix(rowsCount, map);
-  freeMatrix(rowsCount, mapCopy);
-}
-  
-void Forest::setCell(int row, int column, char element) {
-  this->map[row][column] = element;
-}
-
-void Forest::updateForest() { // one midnight
-  makeMapCopy();
-  for(int row = 0; row < this->rowsCount; row++) {
-    for(int column = 0; column < this->columnsCount; column++) {
-      updateCell(row,column);
-    }
-  }
-}
-// Updates cell for the map
-void Forest::updateCell(int row, int column) {
-  switch(map[row][column]) {
-    case 'a':
-      if(flood(row, column)) {
-        map[row][column] = 'l';
-      } else {
-        if(overcrowding(row, column)) {
-          map[row][column] = '-';
+  if(map != NULL) {
+    for (size_t index = 0; index < rows; ++index) {
+          delete[] map[index];
         }
-      }
-    break;
+    }
+  delete[] map;
+}
 
+void Forest::init_forest(size_t rows, size_t columns) {
+  if (!map) {
+    map = new char*[rows];
+    for (size_t index = 0; index < rows; ++index) {
+      map[index] = new char[columns];
+    }
+  }
+}
+
+void Forest::update_cell(size_t row, size_t column, char** next_day) {
+  char tree_count = 0, lake_count = 0, meadow_count = 0;
+  check_neighbors(tree_count, lake_count, meadow_count, row, column);
+  switch (map[row][column]) {
+    case 'a':
+      if (lake_count >=4)
+        next_day[row][column] = 'l';
+      else if (tree_count > 4)
+        next_day[row][column] = '-';
+      else
+        next_day[row][column] = 'a';
+      break;
+    
     case 'l':
-      if(drought(row, column)) {
-        map[row][column]= '-';
+      if (lake_count < 3)
+        next_day[row][column] = '-';
+      else
+        next_day[row][column] = 'l';
+      break;
+    
+    case '-':
+      if (tree_count >= 3)
+        next_day[row][column] = 'a';
+      else
+        next_day[row][column] = '-';
+      break;
+  }
+}
+
+bool Forest::in_bounds(size_t row, size_t column, size_t index) {
+  return row + row_dis[index] < rows && column + col_dis[index] < columns;
+}
+
+void Forest::check_neighbors(char& tree_count, char& lake_count, char& meadow_count, size_t row, size_t column) {
+  for (size_t index = 0; index < 8; ++index) {
+    if (in_bounds(row, column, index)) {
+      switch (map[row+row_dis[index]][column+col_dis[index]]) {
+        case 'a':
+          ++tree_count;
+          break;
+        
+        case '-':
+          ++meadow_count;
+          break;
+        
+        case 'l':
+          ++lake_count;
+          break;
       }
-    break;
-
-    case '-': 
-      if(reforestation(row, column)) {
-        map[row][column]= 'a';
-      }
-
-    break;
-  }
-  // Estabilidad: Cualquier otra situación, la celda permanece como está.
-
-}
-
-void Forest::makeMapCopy() {
-  for(int row = 0; row < this->rowsCount; row++) {
-    for(int column = 0; column < this->columnsCount; column++) {
-      mapCopy[row][column] = map[row][column];
     }
   }
 }
 
-int Forest::countNeighborCells(int row, int column, char type) {
-  int numNeighborsOfType = 0;
-  for (int direction = 0; direction < NUMDIRECTIONS; direction++) {
-    int dirRow = row + SUMROW[direction];
-    int dirColumn = column + SUMCOL[direction];
-
-    if(dirRow >= 0 && dirRow < this->rowsCount && dirColumn >= 0 && dirColumn < this->columnsCount) {
-      if(mapCopy[dirRow][dirColumn] == type) {
-        numNeighborsOfType++;
-      }
-    }
+void Forest::end_day() {
+  char** next_day = new char*[rows];
+  for (size_t index = 0; index < rows; ++index) {
+    next_day[index] = new char[columns];
   }
-  return numNeighborsOfType;
-}
 
-void Forest::printForest() {
-  for(int row = 0; row < this->rowsCount; row++) {
-    for(int column = 0; column < this->columnsCount; column++) {
-      std::cout << map[row][column];
-    }
-    std::cout << endl;
-  }
-}
-
-/*Inundación: Si la celda tiene un árbol y al menos 4 vecinos que son lago encantado('l'),
-  entonces el lago ahoga el árbol, y pasa a ser lago encantado('l').*/
-bool Forest::flood(int row, int column) {
-  return countNeighborCells(row, column, 'l') >= 4;
-}
-
-/*Hacinamiento: Si la celda es un árbol y tiene más de 4 vecinos árbol, el exceso de sombra
-  evita que crezca y entonces pasa a ser pradera.*/
-bool Forest::overcrowding(int row, int column) {
-  return countNeighborCells(row, column, 'a') > 4;
-}
-
-/* Sequía: Si la celda es lago encantado y tiene menos de 3 vecinos que sean lago encantado,
-  entonces el lago se seca y pasa a ser pradera.*/
-bool Forest::drought(int row, int column) {
-  return countNeighborCells(row, column, 'l') < 3;
-}
-
-/*Reforestación: Si la celda es pradera y tiene al menos 3 vecinos árboles, las semillas 
-  tendrán espacio para crecer y la celda se convierte en árbol.*/
-bool Forest::reforestation(int row, int column) {
-  return countNeighborCells(row, column, 'a') >= 3;
-}
-
-int Forest::getRowsCount() {
-  return rowsCount;
-}
-int Forest::getColumnsCount() {
-  return columnsCount;
-}
-
-char** Forest::createMatrix(int rowsCount, int columnsCount) {
-  char** matrix = (char**) calloc(rowsCount, sizeof(char*));
-  if (matrix == NULL){
-    return NULL;  
-  }
-  
-  for (int row = 0; row < rowsCount; ++row) {
-    if((matrix[row] = (char*) calloc(columnsCount, sizeof(char))) == NULL) {
-      freeMatrix(rowsCount, matrix);
-      return NULL;
+  for(size_t row = 0; row < rows; ++row) {
+    for (size_t col = 0; col < columns; ++col) {
+      update_cell(row, col, next_day);
     }
   }
 
-  return matrix;
+  for (size_t index = 0; index < rows; ++index) {
+    delete[] map[index];
+  }
+  delete[] map;
+  map = next_day;
 }
 
-void Forest::freeMatrix(const int rowsCount, char** matrix) {
-  if (matrix) {
-    for (size_t row = 0; row < rowsCount; ++row){
-      free(matrix[row]);
+void Forest::set_cell(size_t row, size_t col, char data) {
+  map[row][col] = data;
+}
+
+std::string Forest::to_string() {
+  std::string forest_str;
+  for(size_t row = 0; row < rows; ++row) {
+    for (size_t col = 0; col < columns; ++col) {
+      forest_str += map[row][col];
     }
+    forest_str += '\n';
   }
-  free(matrix);
+  return forest_str;
+}
+
+std::string Forest::get_map_name() {
+  return this->map_name;
 }

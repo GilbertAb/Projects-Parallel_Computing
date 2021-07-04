@@ -1,40 +1,30 @@
-// Copyright 2021 Gilbert Marquez Aldana <gilbert.marquez@ucr.ac.cr>
+// Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
 #ifndef FOREST_H
 #define FOREST_H
 
-#include <iostream>
-#include <fstream>
-#include <stdlib.h> 
+#include <cstdlib>
+#include <string>
 
 class Forest {
-
  private:
+  // TODO(any) change map_name for map_path wherever needed
+  std::string map_name;
+  size_t rows;
+  size_t columns;
   char** map;
-  char** mapCopy;
-  int rowsCount;
-  int columnsCount;
 
-  bool flood(int row, int column);
-  bool overcrowding(int row, int column);
-  bool drought(int row, int column);
-  bool reforestation(int row, int column);
-  char** createMatrix(int rowsCount, int columnsCount);
-  void freeMatrix(int rowsCount, char** matrix);
  public:
-  /// Constructor
-  Forest();
-  Forest(int rows, int columnsCount);
+  Forest(size_t rows, size_t columns, const char* map_name);
   ~Forest();
-  
-  void setCell(int row, int column, char element);
-  void updateForest(); // one midnight
-  void updateCell(int row, int column);
-  void makeMapCopy();
-  int countNeighborCells(int row, int column, char type);
-  void printForest();
-  int getRowsCount();
-  int getColumnsCount();
+  void init_forest(size_t rows, size_t columns);
+  void update_cell(size_t row, size_t column, char** next_day);
+  void check_neighbors(char& tree_count, char& lake_count, char& meadow_count, size_t row, size_t column);
+  bool in_bounds(size_t row, size_t column, size_t index);
+  void end_day();
+  void set_cell(size_t row, size_t col, char data);
+  std::string get_map_name();
+  std::string to_string();
 };
 
-#endif  // FOREST_H
+#endif // FOREST_H
