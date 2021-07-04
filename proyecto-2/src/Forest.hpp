@@ -15,7 +15,7 @@ class Forest {
   char** map;
 
  public:
-  Forest(size_t rows, size_t columns, const char* map_name);
+  Forest(size_t rows, size_t columns, std::string map_name);
   ~Forest();
   void init_forest(size_t rows, size_t columns);
   void update_cell(size_t row, size_t column, char** next_day);

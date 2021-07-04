@@ -4,10 +4,10 @@
 #include <iostream>
 
 //TODO(all) Find a better way to store displacement arrays
-const char const row_dis[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
-const char const col_dis[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+const char row_dis[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
+const char col_dis[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 
-Forest::Forest(size_t rows, size_t columns, const char* map_name) {
+Forest::Forest(size_t rows, size_t columns, std::string map_name) {
   this->map_name = map_name;
   init_forest(rows, columns);
   this->rows = rows;
