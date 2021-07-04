@@ -1,18 +1,10 @@
-// Copyright 2021 Gilbert Marquez Aldana <gilbert.marquez@ucr.ac.cr>
-//typedef basic_string<char> string;
-#include <iostream>
-#include <fstream>
-#include "MapGenerator.hpp"
-using namespace std;
+// Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
+
+#include "Island.hpp"
 
 
 int main(int argc, char* argv[]) {
-  int error = 0;
-  if (argc == 2) {
-    MapGenerator mapGenerator = MapGenerator();
-    error = mapGenerator.run(argv[1]);
-  } else {
-    // ask fileName
-  }
-  return error;
+  Island island;
+  island.get_job(argv[1]);
+  island.simulate_days(island.create_output_directory(argv[1]));
 }
