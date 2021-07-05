@@ -58,9 +58,7 @@ void Island::create_forest(std::string map_path, std::string map_name, int64_t d
   }
 }
 
-void Island::simulate_days(std::string output_directory_path) {
-  // TODO: receive thread_count from main
-  int thread_count = 8;
+void Island::simulate_days(std::string output_directory_path, size_t thread_count) {
 
   #pragma omp parallel for num_threads(thread_count) default(none) \
     shared(std::cout, output_directory_path)
