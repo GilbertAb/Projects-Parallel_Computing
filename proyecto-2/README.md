@@ -51,3 +51,14 @@ After compiling execute forest in a terminal followed by a space and the path to
 Example: ./bin/forest test_set_1/input/job001.txt
 Its important to remember that the file job needs to follow a format explained in the proyect description with the respective maps following their own format in the same route.
 
+### Performance analysis
+
+In order to optimize the solution of our problem, we'll perform performance measurements with the following mappings: block, cyclic, block cyclic, dynamic, and guided. Later, we will compare the mapping types and, finally, discuss the conclusions.
+
+1) Performance of the serial version.
+
+ After executing the serial version 3 times, taking the faster, our execution time was 7560.534 seconds (2 hours and 6 minutes aprox).
+
+2) Parallelization of the code.
+
+ To parellelize the code we'll use OpenMP directives. Due to the structure of our program, the maps are iterated and modified in a for cycle. So, our desing will consist in the use of a "Parallel for" to distribute this iterations between threads.
