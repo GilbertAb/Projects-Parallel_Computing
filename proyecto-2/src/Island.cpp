@@ -1,10 +1,10 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
-#include "Island.hpp"
+#include <cstring>
 #include <fstream>
 #include <iostream>
-#include <cstring>
 #include <omp.h>
+#include "Island.hpp"
 
 Island::Island(){}
 
@@ -90,10 +90,8 @@ void Island::simulate_days(std::string output_directory_path) {
   }
 }
 
-std::string Island::create_output_directory(std::string job_path) {
-  std::string output_directory = job_path;
-  output_directory = output_directory.substr(0, output_directory.rfind("input"));
-  output_directory += "output/";
+std::string Island::create_output_directory() {
+  std::string output_directory = "output/";
   std::string shell_command = "mkdir -p " + output_directory;
   system(shell_command.c_str());  // create folder executing shell command (not portable)
   return output_directory;

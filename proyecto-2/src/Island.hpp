@@ -19,7 +19,7 @@ class Island {
   void get_job(const char* filename);
   void create_forest(std::string map_path, std::string map_name, int64_t days);
   void simulate_days(std::string output_path);
-  std::string create_output_directory(std::string job_path);
+  std::string create_output_directory();
   bool is_open(std::fstream& fstream, std::string file);
   
 };

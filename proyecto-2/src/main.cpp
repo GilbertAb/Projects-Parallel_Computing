@@ -3,9 +3,9 @@
 // TODO(KEVIN) add documentation
 // TODO(KEVIN) fix linter warnings
 
-#include "Island.hpp"
 #include <exception>
 #include <iostream>
+#include "Island.hpp"
 
 int main(int argc, char* argv[]) {
   int error = EXIT_SUCCESS;
