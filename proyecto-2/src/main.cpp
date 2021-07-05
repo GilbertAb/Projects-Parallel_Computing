@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
     try {
     Island island;
     island.get_job(argv[1]);
-    island.simulate_days(island.create_output_directory(argv[1]));
+    island.simulate_days(island.create_output_directory());
     } catch (const std::runtime_error& e) {
       std::cerr << "Error: " << e.what()<<'\n';
       error = EXIT_FAILURE; 
