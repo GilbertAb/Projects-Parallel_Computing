@@ -60,9 +60,8 @@ void Island::create_forest(std::string map_path, std::string map_name, int64_t d
 
 void Island::simulate_days(std::string output_directory_path, size_t thread_count) {
 
-  #pragma omp parallel for num_threads(thread_count) default(none) \
-    shared(std::cout, output_directory_path)
-
+  /*#pragma omp parallel for num_threads(thread_count) default(none) \
+    shared(std::cout, output_directory_path) schedule(static,1)*/
   for (size_t index = 0; index < forest.size(); ++index) {
     std::fstream fstream;
     size_t output_at_day = 0; // create output file if current day is equal or greater
@@ -72,9 +71,9 @@ void Island::simulate_days(std::string output_directory_path, size_t thread_coun
       output_at_day = days[index];
     }
     // OpenMP test
-    #pragma omp critical
+    /*#pragma omp critical
     std::cout<< "thread: " << omp_get_thread_num() << ", map= "<< forest[index]->get_map_name() << std::endl;
-    
+    */
     for (size_t day = 0; day < (size_t)days[index]; ++day) {
       std::string output_path = output_directory_path + forest[index]->get_map_name() + '-';
       forest[index]->end_day();
