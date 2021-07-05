@@ -1,7 +1,7 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
-#include "Forest.hpp"
 #include <iostream>
+#include "Forest.hpp"
 
 //TODO(KEVIN) Find a better way to store displacement arrays or ask Jeisson if its ok
 const char row_dis[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
