@@ -5,8 +5,8 @@
 
 #include <unistd.h>
 #include "Island.hpp"
-#include <exception>
 #include <iostream>
+#include <stdexcept>
 #include "Island.hpp"
 
 int main(int argc, char* argv[]) {
@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     
     Island island;
     island.get_job(argv[1]);
-    island.simulate_days(island.create_output_directory(argv[1]),
+    island.simulate_days(island.create_output_directory(),
       thread_count);
     } catch (const std::runtime_error& e) {
       std::cerr << "Error: " << e.what()<<'\n';
