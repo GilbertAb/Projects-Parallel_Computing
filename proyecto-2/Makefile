@@ -11,8 +11,8 @@ LINTFILTERS=$\
 
 CC=g++
 CC2=clang++
-CFLAGS=-g -Wall -Wextra -fopenmp
-LIBS=-pthread
+CFLAGS=-g -Wall -Wextra -fopenmp -std=gnu++11
+LIBS=
 
 all: directory $(EXECUTABLES)
 
