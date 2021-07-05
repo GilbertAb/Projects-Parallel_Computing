@@ -43,8 +43,11 @@ aaaa---
 
 ### Compiling
 
-This proyect comes with a Makefile that has everuthing you need to compile it just use the command make in the proyect folder on a terminal terminal.
+This proyect comes with a Makefile that has everything you need to compile it just use the command make in the proyect folder on a terminal terminal.
 
 ### User manual
 
+After compiling execute forest in a terminal followed by a space and the path to the job0xx.txt and the program will create a folder named "output" where the results of the requested maps through the job file are saved.
+Example: ./bin/forest test_set_1/input/job001.txt
+Its important to remember that the file job needs to follow a format explained in the proyect description with the respective maps following their own format in the same route.
 
