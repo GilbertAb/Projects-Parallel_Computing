@@ -1,3 +1,5 @@
+// Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
+
 #include "Island.hpp"
 #include <fstream>
 #include <iostream>
