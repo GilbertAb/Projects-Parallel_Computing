@@ -62,3 +62,11 @@ In order to optimize the solution of our problem, we'll perform performance meas
 2) Parallelization of the code.
 
  To parellelize the code we'll use OpenMP directives. Due to the structure of our program, the maps are iterated and modified in a for cycle. So, our desing will consist in the use of a "Parallel for" to distribute this iterations between threads.
+ 
+  2.1) Performance of parallel with static mapping verions.
+   Since the problem will be subdivided between threads, we expect that the performances will be better than the one of the serial version. However, because these following versions use static mapping, the execution will be as fast as the slowest thread, so one thread may have a heavy workload compared to the other threads. Then, we can't predict which of the following versions will have a better performance, because that depends of the type of static mapping used and the order of the maps.
+    2.1.1) Performance using block mapping.
+  
+
+    2.1.2) Performance using cyclic mapping.
+  
