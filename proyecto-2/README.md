@@ -53,7 +53,7 @@ Its important to remember that the file job needs to follow a format explained i
 
 ### Performance analysis
 
-In order to optimize the solution of our problem, we'll perform performance measurements with the following mappings: block, cyclic, block cyclic, dynamic, and guided. Later, we will compare the mapping types and, finally, discuss the conclusions.
+In order to optimize the solution of our problem, we'll perform performance measurements with the following mappings: block, cyclic, block cyclic, dynamic, and guided. Later, we'll compare the mapping types and discuss the conclusions. We'll execute every version of the code three times and take the faster execution time to make our conclusions.
 
 1) Performance of the serial version.
 
@@ -61,13 +61,33 @@ In order to optimize the solution of our problem, we'll perform performance meas
 
 2) Parallelization of the code.
 
- To parellelize the code we'll use OpenMP directives. Due to the structure of our program, the maps are iterated and modified in a for cycle. So, our desing will consist in the use of a "Parallel for" to distribute this iterations between threads.
+ To parellelize the code we'll use OpenMP directives. Due to the structure of our program, the maps are iterated and modified in a "for" cycle. So, our desing will consist in the use of a "Parallel for" to distribute these iterations between threads.
  
   2.1) Performance of parallel with static mapping verions.
-   Since the problem will be subdivided between threads, we expect that the performances will be better than the one of the serial version. However, because these following versions use static mapping, the execution will be as fast as the slowest thread, so one thread may have a heavy workload compared to the other threads. Then, we can't predict which of the following versions will have a better performance, because that depends of the type of static mapping used and the order of the maps.
-   
-  2.1.1) Performance using block mapping.
-   After executing this version 3 times, taking the faster, our execution time was 1668.851 seconds (28 minutes aprox).With this results, we can conclude that this version has a better performance than the serial version, as we expected.
+  
+   Since the problem will be subdivided between threads, we expect that these performances will be better than the one of the serial version. However, because these following versions use static mapping, the execution will be as fast as the slowest thread, so one thread may have a heavy workload compared to the other threads. Then, we can't predict which of the following versions will have a better performance, because that depends of the type of static mapping used and the order of the maps.
 
-  2.1.2) Performance using cyclic mapping.
-   After executing this version 3 times, taking the faster, our execution time was 1460.746 seconds (24 minutes aprox). With this results, we can conclude that this version has a better performance than the serial version, as we expected. Also, has a better performance than the parallel version using block mapping.
+  2.1.1) Block mapping.
+  
+   In this version our execution time was 1668.851 seconds (28 minutes aprox).With these results, we can conclude that this version has a better performance than the serial version, as we expected.
+
+  2.1.2) Cyclic mapping.
+  
+   In this version our execution time was 1460.746 seconds (24 minutes aprox). With these results, we can conclude that this version has a better performance than the serial version, as we expected. Also, has a better performance than the parallel version using block mapping.
+  
+  2.1.3) Block cyclic mapping.
+   
+   In this version our execution time was 1724.351 seconds (29 minutes aprox). With these results, we can conclude that this version has a better performance than the serial version, as we expected. Also, has a better performance than the parallel version using block mapping.
+
+  2.2) Performance of parallel with dynamic mapping verions.
+  
+   We expect that these performances will be better than the serial's version performance (cause the problem will be subdivided between threads) and the ones using static mapping. This second conjecture is because the dynamic mapping allows us to "avoid" the problem that occurs when a heavy workload is given to one or some specific threads, so makes the distribution of tasks more efficient.
+  
+  2.2.1) Dynamic mapping.
+
+   In this version our execution time was 1247.284 seconds (21 minutes aprox). With these results, we can conclude that this version has the best performance of all the mappings, which was expected (we tought that competing with the guide mapping).
+
+  2.2.2) Guide mapping.
+
+   In this version our execution time was 1494.211 seconds (25 minutes aprox). With these results, we can conclude that this version has a better performance than the serial version, as we expected. Also, has a better performance than the version using block mapping and worse than the dynamic mapping version. Surprisingly, it has a slightly worse performance than the static cyclic mapping version, something that we weren't expecting.
+ 
