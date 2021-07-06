@@ -93,4 +93,8 @@ In order to optimize the solution of our problem, we'll perform performance meas
   2.2.2) Guide mapping.
 
    In this version our execution time was 1494.211 seconds (25 minutes aprox). With these results, we can conclude that this version has a better performance than the serial version, as we expected. Also, has a better performance than the version using block mapping and worse than the dynamic mapping version. Surprisingly, it has a slightly worse performance than the static cyclic mapping version, something that we weren't expecting.
+
+   ![Graph](./img/data-analysis.jpeg"Execution time and efficiency")
+
+  As we expected, dynamic mapping had the fastest execution time, probably due to how different work units were. Dynamic mapping was the most efficient as well, as all the parallel version used the same amount of threads, then the fastest is also the most efficient. However, this results depend a lot on the input, as the size of the work units could affect which mapping method works better. For job002 input, dynamic mapping is clearly the fastest and most efficient.
  
