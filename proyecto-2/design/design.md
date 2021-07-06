@@ -4,18 +4,18 @@ The program is made so that the class Island is in control of the functionality,
 
 UML design:
 
- ![UML](./img/class_diagram.svg "UML design")
+ ![UML](../img/class_diagram.svg "UML design")
 
 Class interaction:
 
- ![interaction](./img/colaboration_diagram.svg "Colaboration Diagram")
+ ![interaction](../img/colaboration_diagram.svg "Colaboration Diagram")
 
 Pseudocode:
 
- ![simulate_days](./img/simulate_days.png "Simulate Days")
+ ![simulate_days](../img/simulate_days.png "Simulate Days")
 
- ![end_day](./img/end_day.png "End Day")
+ ![end_day](../img/end_day.png "End Day")
 
- ![update_cell](./img/update_cell.png "Update Cell")
+ ![update_cell](../img/update_cell.png "Update Cell")
 
  
