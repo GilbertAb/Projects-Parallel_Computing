@@ -66,7 +66,8 @@ In order to optimize the solution of our problem, we'll perform performance meas
   2.1) Performance of parallel with static mapping verions.
    Since the problem will be subdivided between threads, we expect that the performances will be better than the one of the serial version. However, because these following versions use static mapping, the execution will be as fast as the slowest thread, so one thread may have a heavy workload compared to the other threads. Then, we can't predict which of the following versions will have a better performance, because that depends of the type of static mapping used and the order of the maps.
     2.1.1) Performance using block mapping.
-  
+     After executing this version 3 times, taking the faster, our execution time was 1668.851 seconds (28 minutes aprox).
+	 With this results, we can conclude that this version has a better performance than the serial version, as we expected.
 
     2.1.2) Performance using cyclic mapping.
-  
+     After executing this version 3 times, taking the faster, our execution time was 1460.746 seconds (24 minutes aprox). With this results, we can conclude that this version has a better performance than the serial version, as we expected. Also, has a better performance than the parallel version using block mapping.
