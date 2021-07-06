@@ -46,13 +46,19 @@ class Forest {
 
   /**
    * @brief Updates cell to its next day state.
-   * @details Neighbors cells are verified and a char is written to the next_day state
-   * map cell with the same index. The char written depends on these conditions:
-   *  - Flood: if cell is a tree and 4 neighbors are lake then the cell becomes lake
-   *  - Drought: if cell is lake and has less than 3 lake neighbors then cell becomes meadow
-   *  - Reforestation: if cell is meadow and has at least 3 tree neighbors then cell becomes tree
-   *  - Overcrowding: if cell is tree and has more than 4 tree neighbors then cell becomes meadow
-   *  - Stability: the cell remains the same if none of the previous conditions occur.
+   * @details Neighbors cells are verified and a char is written to the
+   * next_day state map cell with the same index. The char written depends
+   * on these conditions:
+   *  - Flood: if cell is a tree and 4 neighbors are lake then the cell becomes
+   *    lake
+   *  - Drought: if cell is lake and has less than 3 lake neighbors then cell
+   *    becomes meadow
+   *  - Reforestation: if cell is meadow and has at least 3 tree neighbors then
+   *    cell becomes tree
+   *  - Overcrowding: if cell is tree and has more than 4 tree neighbors then
+   *    cell becomes meadow
+   *  - Stability: the cell remains the same if none of the previous conditions
+   *    occur.
    * @param row row index of cell
    * @param column column index of cell
    * @param next_day matrix to store the updated cell
@@ -61,15 +67,17 @@ class Forest {
 
   /**
    * @brief Count adjacent neighbors.
-   * @details Three counters are updated according to the char contained in the neighbor cells. All 8
-   * adjacent cells are checked and a counter is increased according to the char stored.
+   * @details Three counters are updated according to the char contained in the
+   * neighbor cells. All 8 adjacent cells are checked and a counter is increased
+   *  according to the char stored.
    * @param tree_count Tree counter
    * @param lake_count Lake counter
    * @param meadow_count Meadow counter
    * @param row Row index of cell
    * @param column Column index of cell
    */
-  void check_neighbors(char& tree_count, char& lake_count, char& meadow_count, size_t row, size_t column);
+  void check_neighbors(char& tree_count, char& lake_count, char& meadow_count,
+  size_t row, size_t column);
 
   /**
    * @brief Verifies if the cell is in a valid position of the map.
@@ -107,4 +115,4 @@ class Forest {
   std::string to_string();
 };
 
-#endif // FOREST_H
+#endif  // FOREST_H
