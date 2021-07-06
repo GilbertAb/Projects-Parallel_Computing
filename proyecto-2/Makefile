@@ -1,5 +1,5 @@
 APPNAME=forest
-HEADERS=$(wildcard src/*.h)
+HEADERS=$(wildcard src/*.hpp)
 SOURCES=$(wildcard src/*.cpp)
 EXECUTABLES=$(APPNAME) $(APPNAME)_asan $(APPNAME)_msan $(APPNAME)_tsan $(APPNAME)_ubsan
 LINTFILTERS=$\

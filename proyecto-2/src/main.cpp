@@ -1,12 +1,10 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
-// TODO(KEVIN) add documentation
 // TODO(KEVIN) fix linter warnings
 
-#include <unistd.h>
-#include "Island.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <unistd.h>
 #include "Island.hpp"
 
 int main(int argc, char* argv[]) {
