@@ -17,20 +17,21 @@
 class Island {
  private:
   std::vector<Forest*> forest; /**< Array with the Forest requested */
-  std::vector<int64_t> days;   /**< Array with the days aligned in order with Forest */
+  std::vector<int64_t> days;   //< Array with the days aligned in order with
+                              //   Forest
 
  public:
   /**
    * Constructor.
    */
   Island();
-  
+
   /**
    * Destructor.
    * Frees the memory of the Forest array;
    */
   ~Island();
-  
+
   /**
    * @brief Gets the map path, maps, days and map name from the file and send
    * it to create the map and the corresponding days requested.
@@ -40,7 +41,7 @@ class Island {
    * @param filename path introduced by the user where job is supossed to be
    */
   void get_job(const char* filename);
-  
+
   /**
    * @brief Creates and saves the Forests with the days requested
    * @details Retrieves the map size and map content from the map file
@@ -50,7 +51,7 @@ class Island {
    * @param days number of days related to the map
    */
   void create_forest(std::string map_path, std::string map_name, int64_t days);
-  
+
   /**
    * @brief Simulates the requested number of days to put in the output
    * @details Goes through each Forest saved and apply the number of days saved
@@ -61,13 +62,13 @@ class Island {
    * @param thread_count number of threads in which the work will be distributed
    */
   void simulate_days(std::string output_path, size_t thread_count);
-  
+
   /**
    * @brief Creates the directory for the outputs
    * @return The path to the newly created directory
    */
   std::string create_output_directory();
-  
+
   /**
    * @brief Checks if the fstream file is open and if it isnt throws an error
    * @param fstream the fstream that will be checked
@@ -75,7 +76,6 @@ class Island {
    * @return a boolean result meaning if the file was succesfuly opened
    */
   bool is_open(std::fstream& fstream, std::string file);
-  
 };
 
-#endif // ISLAND_H
+#endif  // ISLAND_H
