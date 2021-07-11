@@ -42,7 +42,7 @@ void GoldbachWebApp::serveGoldbachSums(HttpResponse& httpResponse
     << "  <h1>" << title << "</h1>\n";
   for (size_t index = 0; index < sums.size(); ++index) {
     httpResponse.body() << "  <h2";
-    if (sums[index].size() == 1) {
+    if (sums[index][0].rfind("NA") != std::string::npos) {
       httpResponse.body() <<  " class=\"err\"";
     }
     httpResponse.body() << ">" << sums[index][0].substr(0, sums[index][0].rfind(":")) << "</h2>\n"
