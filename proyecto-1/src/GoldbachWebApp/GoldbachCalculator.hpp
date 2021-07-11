@@ -7,7 +7,7 @@
 #include <vector>
 
 class GoldbachCalculator {
- private:
+ protected:
   /**
   * @brief Verifies if a number is prime or not, then returns the result.
   * @details Verifies if a number is prime checking if it has more than 2 
