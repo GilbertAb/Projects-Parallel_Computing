@@ -1,7 +1,7 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 #include "SumsDispatcher.hpp"
 
-SumsDispatcher::SumsDispatcher(){}
+SumsDispatcher::SumsDispatcher(GoldbachSums stopCondition) : Dispatcher(nullptr, stopCondition){}
 
 int SumsDispatcher::run() {
   this->consumeForever();

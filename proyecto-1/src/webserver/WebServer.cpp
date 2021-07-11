@@ -29,7 +29,11 @@ WebServer* WebServer::getInstance() {
 }
 
 WebServer::WebServer() {
-  this->dispatcher.createOwnQueue();
+  GoldbachSums stopCondition;
+  stopCondition.threadNumber = INT64_MAX;
+  this->dispatcher = new SumsDispatcher(stopCondition);
+  this->dispatcher->createOwnQueue();
+  this->dispatcher->startThread();
 }
 WebServer::~WebServer() {}
 
@@ -145,11 +149,13 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse, size
 
 void WebServer::startCalculators() {
   size_t threadCount = sysconf(_SC_NPROCESSORS_ONLN);
+  GoldbachNumber stopCondition;
+  stopCondition.threadNumber = INT64_MAX;
   calculators.resize(threadCount);
   for (size_t index = 0; index < threadCount; ++index) {
-    calculators[index] = new AssemblerCalculator();
+    calculators[index] = new AssemblerCalculator(stopCondition);
     calculators[index]->setConsumingQueue(&this->numberQueue);
-    calculators[index]->setProducingQueue(this->dispatcher.getConsumingQueue());
+    calculators[index]->setProducingQueue(this->dispatcher->getConsumingQueue());
     calculators[index]->startThread();
   }
 }
@@ -158,6 +164,6 @@ void WebServer::registerQueues() {
   sumQueues.resize(consumerCount);
   for (size_t index = 0; index < consumerCount; ++index) {
     sumQueues[index] = new Queue<GoldbachSums>();
-    dispatcher.registerRedirect(index, sumQueues[index]);
+    dispatcher->registerRedirect(index, sumQueues[index]);
   }
 }

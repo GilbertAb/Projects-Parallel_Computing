@@ -34,7 +34,7 @@ class AssemblerCalculator
  DISABLE_COPY(AssemblerCalculator);
 
  public:
-  AssemblerCalculator();
+  AssemblerCalculator(GoldbachNumber stopCondition);
   ~AssemblerCalculator();
   void consume(const GoldbachNumber& data) override;
   //void produce(const GoldbachSums& data) override;

@@ -30,7 +30,7 @@ class WebServer : public HttpServer {
   std::vector<AssemblerCalculator*> calculators;
   Queue<GoldbachNumber> numberQueue;
   std::vector<Queue<GoldbachSums>*> sumQueues;
-  SumsDispatcher dispatcher;
+  SumsDispatcher* dispatcher;
 
  public:
   /// Get access to the unique instance of this Singleton class

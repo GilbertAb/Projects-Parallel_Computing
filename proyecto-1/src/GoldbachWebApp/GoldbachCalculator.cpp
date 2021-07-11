@@ -18,24 +18,24 @@ bool GoldbachCalculator::isPrime(int64_t number) {
   return prime;
 }
 
-std::vector<std::vector<std::string>> GoldbachCalculator
-  ::getGoldbachSums(std::vector<int64_t> numbers) {
-  size_t number_count = numbers.size();
-  std::vector<std::vector<std::string>> numbers_sums(number_count);
+// std::vector<std::vector<std::string>> GoldbachCalculator
+//   ::getGoldbachSums(std::vector<int64_t> numbers) {
+//   size_t number_count = numbers.size();
+//   std::vector<std::vector<std::string>> numbers_sums(number_count);
 
-  for (size_t index = 0; index < number_count; ++index) {
-    if (numbers[index] > -6 && numbers[index] < 6) {
-      numbers_sums[index].push_back(std::to_string(numbers[index]) + ": NA\n");
-    } else {
-        if (numbers[index] % 2 == 0) {
-          numbers_sums[index] = strongGoldbach(numbers[index]);
-        } else {
-          numbers_sums[index] = weakGoldbach(numbers[index]);
-        }
-      }
-  }
-  return numbers_sums;
-}
+//   for (size_t index = 0; index < number_count; ++index) {
+//     if (numbers[index] > -6 && numbers[index] < 6) {
+//       numbers_sums[index].push_back(std::to_string(numbers[index]) + ": NA\n");
+//     } else {
+//         if (numbers[index] % 2 == 0) {
+//           numbers_sums[index] = strongGoldbach(numbers[index]);
+//         } else {
+//           numbers_sums[index] = weakGoldbach(numbers[index]);
+//         }
+//       }
+//   }
+//   return numbers_sums;
+// }
 
 std::vector<std::string> GoldbachCalculator::strongGoldbach(int64_t number) {
   bool show_sums = number < 0;
@@ -54,7 +54,11 @@ std::vector<std::string> GoldbachCalculator::strongGoldbach(int64_t number) {
       }
     }
   }
-  sums[0] += ": " + std::to_string(sum_count)+" sums";
+  if (sum_count) {
+    sums[0] += ": " + std::to_string(sum_count)+" sums";
+  } else {
+    sums[0] += ": NA";
+  }
   return sums;
 }
 
@@ -79,6 +83,10 @@ std::vector<std::string> GoldbachCalculator::weakGoldbach(int64_t number) {
       }
     }
   }
-  sums[0] += ": " + std::to_string(sum_count)+" sums";
+  if (sum_count) {
+    sums[0] += ": " + std::to_string(sum_count)+" sums";
+  } else {
+    sums[0] += ": NA";
+  }
   return sums;
 }

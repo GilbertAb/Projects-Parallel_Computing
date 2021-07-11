@@ -2,7 +2,9 @@
 
 #include "AssemblerCalculator.hpp"
 
-AssemblerCalculator::AssemblerCalculator() {}
+AssemblerCalculator::AssemblerCalculator(GoldbachNumber stopCondition)
+: Assembler(nullptr, nullptr, stopCondition){
+}
 AssemblerCalculator::~AssemblerCalculator() {}
 
 int AssemblerCalculator::run() {
@@ -14,6 +16,6 @@ int AssemblerCalculator::run() {
 void AssemblerCalculator::consume(const GoldbachNumber& data) {
   GoldbachSums sums;
   sums.threadNumber = data.threadNumber;
-  (data.number % 2 == 0) ? sums.sums = strongGoldbach(data.number) : weakGoldbach(data.number);
+  (data.number % 2 == 0) ? sums.sums = strongGoldbach(data.number) : sums.sums = weakGoldbach(data.number);
   produce(sums); 
 }

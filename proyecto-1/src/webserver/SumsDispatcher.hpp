@@ -17,7 +17,7 @@ class SumsDispatcher : public Dispatcher<size_t, GoldbachSums> {
 
  public:
   /// Constructor
-  explicit SumsDispatcher();
+  explicit SumsDispatcher(GoldbachSums stopCondition);
   /// Start redirecting network messages
   int run() override;
   /// This method extracts the key from a data stored in the fromQueue
