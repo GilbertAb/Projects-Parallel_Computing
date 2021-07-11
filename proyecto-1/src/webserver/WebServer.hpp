@@ -4,8 +4,10 @@
 #define WEBSERVER_H
 
 #include <vector>
-#include "HttpServer.hpp"
+#include "AssemblerCalculator.hpp"
 #include "GoldbachWebApp.hpp"
+#include "HttpServer.hpp"
+#include "Queue.hpp"
 
 #define DEFAULT_PORT "8080"
 
@@ -23,6 +25,10 @@ class WebServer : public HttpServer {
   const char* port = DEFAULT_PORT;
   /// Web app that handles the calculation of goldbach
   GoldbachWebApp webApp;
+
+  std::vector<AssemblerCalculator> calculators;
+  Queue<GoldbachNumber> numbers;
+  std::vector<Queue<GoldbachSums>> sumQueues;
 
  public:
   /// Get access to the unique instance of this Singleton class

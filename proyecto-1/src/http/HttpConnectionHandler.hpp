@@ -14,11 +14,11 @@ class HttpConnectionHandler : public Consumer<Socket> {
 
  protected:
   HttpServer* httpServer;
-
+  size_t threadNumber;
  public:
   /** Constructor. Initializes httpServer.
   */
-  explicit HttpConnectionHandler(HttpServer* httpServer, Socket stopCondition);
+  explicit HttpConnectionHandler(HttpServer* httpServer, Socket stopCondition, size_t threadNumber);
 
   /**
    * @brief Start the forever loop to consume all the connections that arrive.
