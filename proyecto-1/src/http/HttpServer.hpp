@@ -47,7 +47,7 @@ class HttpServer : public TcpServer {
   /// HTTP requests, or false if server should stop accepting requests from
   /// this client (e.g: HTTP/1.0)
   virtual bool handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) = 0;
+    HttpResponse& httpResponse, size_t threadNumber) = 0;
 
  protected:
   /// This method is called each time a client connection request is accepted.

@@ -1,6 +1,7 @@
 // Copyright 2021 Jeisson Hidalgo-Cespedes. Universidad de Costa Rica. CC BY 4.0
 
 #include <cassert>
+#include <unistd.h>
 #include <iostream>
 #include <regex>
 #include <stdexcept>
@@ -27,13 +28,17 @@ WebServer* WebServer::getInstance() {
   return instance;
 }
 
-WebServer::WebServer() {}
+WebServer::WebServer() {
+  this->dispatcher.createOwnQueue();
+}
 WebServer::~WebServer() {}
 
 int WebServer::start(int argc, char* argv[]) {
   try {
     if (this->analyzeArguments(argc, argv)) {
       this->startConsumers();
+      this->startCalculators();
+      this->registerQueues();
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
       std::cout << "web server listening on " << address.getIP()
@@ -73,7 +78,7 @@ bool WebServer::analyzeArguments(int argc, char* argv[]) {
 }
 
 bool WebServer::handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) {
+    HttpResponse& httpResponse, size_t threadNumber) {
   /// Print IP and port from client
   const NetworkAddress& address = httpRequest.getNetworkAddress();
   std::cout << "connection established with client " << address.getIP()
@@ -84,10 +89,10 @@ bool WebServer::handleHttpRequest(HttpRequest& httpRequest,
     << ' ' << httpRequest.getURI()
     << ' ' << httpRequest.getHttpVersion() << std::endl;
 
-  return this->route(httpRequest, httpResponse);
+  return this->route(httpRequest, httpResponse, threadNumber);
 }
 
-bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
+bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse, size_t threadNumber) {
   /// If the home page was asked
   if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/") {
     return webApp.serve(httpResponse, HOME_PAGE);
@@ -114,7 +119,21 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
           numberstr.clear();
         }
       }
-      return webApp.serve(httpResponse, SUMS, numbers);
+      size_t numCount = numbers.size();
+      for (size_t index = 0; index < numCount; ++index) {
+        GoldbachNumber number;
+        number.threadNumber = threadNumber;
+        number.number = numbers[index];
+        numberQueue.push(number);
+      }
+
+      std::vector<std::vector<std::string>> sums;
+      for(size_t index = 0; index < numCount; ++index) {
+        sums.push_back(sumQueues[threadNumber]->pop().sums);
+      }
+
+      // TODO(any): send string with sums 
+      return webApp.serve(httpResponse, SUMS, sums);
     }
     /// Number requested too big (2^63 or greater)
   } catch (const std::out_of_range& oor) {
@@ -122,4 +141,23 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse) {
   }
   /// Unrecognized request
   return webApp.serve(httpResponse, NOT_FOUND);
+}
+
+void WebServer::startCalculators() {
+  size_t threadCount = sysconf(_SC_NPROCESSORS_ONLN);
+  calculators.resize(threadCount);
+  for (size_t index = 0; index < threadCount; ++index) {
+    calculators[index] = new AssemblerCalculator();
+    calculators[index]->setConsumingQueue(&this->numberQueue);
+    calculators[index]->setProducingQueue(this->dispatcher.getConsumingQueue());
+    calculators[index]->startThread();
+  }
+}
+
+void WebServer::registerQueues() {
+  sumQueues.resize(consumerCount);
+  for (size_t index = 0; index < consumerCount; ++index) {
+    sumQueues[index] = new Queue<GoldbachSums>();
+    dispatcher.registerRedirect(index, sumQueues[index]);
+  }
 }

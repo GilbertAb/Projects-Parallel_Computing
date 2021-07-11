@@ -6,7 +6,7 @@ GoldbachWebApp::GoldbachWebApp() {}
 GoldbachWebApp::~GoldbachWebApp() {}
 
 bool GoldbachWebApp::serve(HttpResponse& httpResponse, int serve
-  , const std::vector<int64_t>& numbers) {
+  , const std::vector<std::vector<std::string>>& sums) {
   // Set HTTP response metadata (headers)
   httpResponse.setHeader("Server", "AttoServer v1.0");
   httpResponse.setHeader("Content-type", "text/html; charset=ascii");
@@ -14,7 +14,7 @@ bool GoldbachWebApp::serve(HttpResponse& httpResponse, int serve
   // Build the body of the response
   switch (serve) {
   case SUMS:
-    serveGoldbachSums(httpResponse, numbers);
+    serveGoldbachSums(httpResponse, sums);
     break;
 
   case HOME_PAGE:
@@ -31,9 +31,8 @@ bool GoldbachWebApp::serve(HttpResponse& httpResponse, int serve
 }
 
 void GoldbachWebApp::serveGoldbachSums(HttpResponse& httpResponse
-  , std::vector<int64_t> numbers) {
-  std::vector<std::vector<std::string>> sums =
-    calculator.getGoldbachSums(numbers);
+  , const std::vector<std::vector<std::string>>& sums) {
+
   std::string title = "Goldbach sums results";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
@@ -41,12 +40,12 @@ void GoldbachWebApp::serveGoldbachSums(HttpResponse& httpResponse
     << "  <title>" << title << "</title>\n"
     << "  <style>body {font-family: monospace} .err {color: red}</style>\n"
     << "  <h1>" << title << "</h1>\n";
-  for (size_t index = 0; index < numbers.size(); ++index) {
+  for (size_t index = 0; index < sums.size(); ++index) {
     httpResponse.body() << "  <h2";
-    if (numbers[index] > -6 && numbers[index] < 6) {
+    if (sums[index].size() == 1) {
       httpResponse.body() <<  " class=\"err\"";
     }
-    httpResponse.body() << ">" << std::to_string(numbers[index]) << "</h2>\n"
+    httpResponse.body() << ">" << sums[index][0].substr(0, sums[index][0].rfind(":")) << "</h2>\n"
       << "  <p>" << sums[index][0] <<"</p>\n";
     if (sums[index].size() > 1) {
       httpResponse.body() << "  <ol>\n";

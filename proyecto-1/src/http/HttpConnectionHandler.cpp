@@ -7,8 +7,8 @@
 #include "Socket.hpp"
 
 HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer
-  , Socket stopCondition, size_t threadNumber) : httpServer(httpServer), threadNumber(threadNumber),
-   Consumer(nullptr, stopCondition, false) {}
+  , Socket stopCondition, size_t threadNumber) : httpServer(httpServer)
+  , threadNumber(threadNumber), Consumer(nullptr, stopCondition, false) {}
 
 int HttpConnectionHandler::run() {
   // Start the forever loop to consume all the connections that arrive
@@ -40,7 +40,7 @@ void HttpConnectionHandler::consume(const Socket& client) {
     // Give subclass a chance to respond the HTTP request
 
     const bool handled = httpServer->handleHttpRequest(httpRequest,
-      httpResponse);
+      httpResponse, threadNumber);
 
     // If subclass did not handle the request or the client used HTTP/1.0
     if (!handled || httpRequest.getHttpVersion() == "HTTP/1.0") {

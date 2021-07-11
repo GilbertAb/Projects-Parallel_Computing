@@ -8,6 +8,7 @@
 #include "GoldbachWebApp.hpp"
 #include "HttpServer.hpp"
 #include "Queue.hpp"
+#include "SumsDispatcher.hpp"
 
 #define DEFAULT_PORT "8080"
 
@@ -26,9 +27,10 @@ class WebServer : public HttpServer {
   /// Web app that handles the calculation of goldbach
   GoldbachWebApp webApp;
 
-  std::vector<AssemblerCalculator> calculators;
-  Queue<GoldbachNumber> numbers;
-  std::vector<Queue<GoldbachSums>> sumQueues;
+  std::vector<AssemblerCalculator*> calculators;
+  Queue<GoldbachNumber> numberQueue;
+  std::vector<Queue<GoldbachSums>*> sumQueues;
+  SumsDispatcher dispatcher;
 
  public:
   /// Get access to the unique instance of this Singleton class
@@ -48,7 +50,7 @@ class WebServer : public HttpServer {
   /// the program.
   /// @return true on success and the server will continue handling requests
   bool handleHttpRequest(HttpRequest& httpRequest,
-    HttpResponse& httpResponse) override;
+    HttpResponse& httpResponse, size_t threadNumber) override;
 
  protected:
   /// Route, that provide an answer according to the URI value
@@ -56,7 +58,11 @@ class WebServer : public HttpServer {
   /// @param Gets the users request and the response that will be modified by
   /// the program.
   /// @return true on success and the server will continue handling requests
-  bool route(HttpRequest& httpRequest, HttpResponse& httpResponse);
+  bool route(HttpRequest& httpRequest, HttpResponse& httpResponse, size_t threadNumber);
+
+  protected:
+    void startCalculators();
+    void registerQueues();
 };
 
 #endif  // WEBSERVER_H

@@ -1,13 +1,13 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
-#include "DispatcherTest.hpp"
+#include "SumsDispatcher.hpp"
 
-DispatcherTest::DispatcherTest(){}
+SumsDispatcher::SumsDispatcher(){}
 
-int DispatcherTest::run() {
+int SumsDispatcher::run() {
   this->consumeForever();
   return EXIT_SUCCESS;
 }
 
-int DispatcherTest::extractKey(const GoldbachSums& data) const {
+size_t SumsDispatcher::extractKey(const GoldbachSums& data) const {
   return data.threadNumber;
 }

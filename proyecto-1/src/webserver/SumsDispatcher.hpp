@@ -4,6 +4,7 @@
 #define SUMSDISPATCHER_HPP
 
 #include "AssemblerCalculator.hpp"
+#include "common.hpp"
 #include "Dispatcher.hpp"
 
 /**
@@ -20,7 +21,7 @@ class SumsDispatcher : public Dispatcher<size_t, GoldbachSums> {
   /// Start redirecting network messages
   int run() override;
   /// This method extracts the key from a data stored in the fromQueue
-  int extractKey(const GoldbachSums& data) const override;
+  size_t extractKey(const GoldbachSums& data) const override;
 };
 
 #endif  // SUMSDISPATCHER_HPP

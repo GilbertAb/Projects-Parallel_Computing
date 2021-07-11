@@ -2,6 +2,8 @@
 
 #include "AssemblerCalculator.hpp"
 
+AssemblerCalculator::AssemblerCalculator() {}
+AssemblerCalculator::~AssemblerCalculator() {}
 
 int AssemblerCalculator::run() {
   this->consumeForever();

@@ -12,7 +12,7 @@
 #define SUMS 0        /** Goldbach sums requested by user*/
 #define HOME_PAGE -1  /** Homepage requested by user*/
 #define NOT_FOUND -2  /** Invalid request from user*/
-
+// TODO(any): warn class cant have attributes
 
 /**
  * @brief Is the only part of the program that the user can directly
@@ -25,8 +25,6 @@
  */
 class GoldbachWebApp {
  private:
-  GoldbachCalculator calculator; /**Model class instance for number processing*/
-
   /**
   * @brief Builds a respond page with the goldbach sums asked by user. 
   * First gets the goldbach sums from the model class instance and then parses them
@@ -35,7 +33,7 @@ class GoldbachWebApp {
   * @param numbers Dynamic array containing the numbers whose goldbach sums were asked by user
   */
   void serveGoldbachSums(HttpResponse& httpResponse
-    , std::vector<int64_t> numbers);
+    , const std::vector<std::vector<std::string>>& sums);
 
     /**
   * @brief Builds a respond page with the homepage of the aplication. 
@@ -71,6 +69,6 @@ class GoldbachWebApp {
   * It is empty if no numbers were requested.
   */
   bool serve(HttpResponse& httpResponse, int serve
-    , const std::vector<int64_t>& numbers = std::vector<int64_t>());
+    , const std::vector<std::vector<std::string>>& sums = std::vector<std::vector<std::string>>());
 };
 #endif  // GOLDBACHWEBAPP_HPP
