@@ -160,6 +160,18 @@ void WebServer::startCalculators() {
   }
 }
 
+void WebServer::stopProcessing(){
+  size_t threadCount = calculators.size();
+  GoldbachNumber numberStopCondition;
+  numberStopCondition.threadNumber = INT64_MAX;
+  for (size_t index = 0; index < threadCount; ++index){
+    numberQueue.push(numberStopCondition);
+  }
+  GoldbachSums dispatcherStopCondition;
+  dispatcherStopCondition.threadNumber = INT64_MAX;
+  dispatcher->getConsumingQueue()->push(dispatcherStopCondition);
+}
+
 void WebServer::registerQueues() {
   sumQueues.resize(consumerCount);
   for (size_t index = 0; index < consumerCount; ++index) {

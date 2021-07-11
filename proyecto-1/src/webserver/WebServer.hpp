@@ -40,6 +40,8 @@ class WebServer : public HttpServer {
   /// @param Recives the arguments and the number of them written by the user
   int start(int argc, char* argv[]);
 
+  void stopProcessing();
+
  protected:
   /// Analyze the command line arguments
   /// @param Recives the arguments and the number of them written by the user
