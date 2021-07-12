@@ -19,13 +19,11 @@ const char* const usage =
   "  max_connections  Maximum number of allowed client connections\n";
 
 /// Singleton instance
-WebServer* WebServer::instance = nullptr;
+//WebServer* WebServer::instance = nullptr;
 
-WebServer* WebServer::getInstance() {
-  if (instance == NULL) {
-    instance = new WebServer();
-  }
-  return instance;
+WebServer& WebServer::getInstance() {
+  static WebServer webServer;
+  return webServer;
 }
 
 WebServer::WebServer() {
@@ -35,7 +33,9 @@ WebServer::WebServer() {
   this->dispatcher->createOwnQueue();
   this->dispatcher->startThread();
 }
-WebServer::~WebServer() {}
+WebServer::~WebServer() {
+  delete dispatcher;
+}
 
 int WebServer::start(int argc, char* argv[]) {
   try {
@@ -54,6 +54,7 @@ int WebServer::start(int argc, char* argv[]) {
     /// Clean exit if error detected
     stopConsumers();
   }
+  dispatcher->waitToFinish();
 
   return EXIT_SUCCESS;
 }

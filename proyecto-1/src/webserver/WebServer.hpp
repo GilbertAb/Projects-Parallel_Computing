@@ -16,8 +16,6 @@ class WebServer : public HttpServer {
   DISABLE_COPY(WebServer);
 
  private:
-  /// Singleton instance
-  static WebServer* instance;
   /// Constructor
   WebServer();
   /// Destructor
@@ -34,8 +32,7 @@ class WebServer : public HttpServer {
 
  public:
   /// Get access to the unique instance of this Singleton class
-  static WebServer* getInstance();
-
+  static WebServer& getInstance();
   /// Start the simulation
   /// @param Recives the arguments and the number of them written by the user
   int start(int argc, char* argv[]);
