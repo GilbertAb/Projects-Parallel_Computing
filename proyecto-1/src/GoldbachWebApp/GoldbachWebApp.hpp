@@ -69,6 +69,7 @@ class GoldbachWebApp {
   * It is empty if no numbers were requested.
   */
   bool serve(HttpResponse& httpResponse, int serve
-    , const std::vector<std::vector<std::string>>& sums = std::vector<std::vector<std::string>>());
+    , const std::vector<std::vector<std::string>>& sums
+    = std::vector<std::vector<std::string>>());
 };
 #endif  // GOLDBACHWEBAPP_HPP

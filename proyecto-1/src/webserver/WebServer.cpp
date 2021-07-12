@@ -1,7 +1,7 @@
 // Copyright 2021 Jeisson Hidalgo-Cespedes. Universidad de Costa Rica. CC BY 4.0
 
-#include <cassert>
 #include <unistd.h>
+#include <cassert>
 #include <iostream>
 #include <regex>
 #include <stdexcept>
@@ -17,9 +17,6 @@ const char* const usage =
   "  port             Network port to listen incoming HTTP requests, default "
     DEFAULT_PORT "\n"
   "  max_connections  Maximum number of allowed client connections\n";
-
-/// Singleton instance
-//WebServer* WebServer::instance = nullptr;
 
 WebServer& WebServer::getInstance() {
   static WebServer webServer;
@@ -97,7 +94,8 @@ bool WebServer::handleHttpRequest(HttpRequest& httpRequest,
   return this->route(httpRequest, httpResponse, threadNumber);
 }
 
-bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse, size_t threadNumber) {
+bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
+  size_t threadNumber) {
   /// If the home page was asked
   if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/") {
     return webApp.serve(httpResponse, HOME_PAGE);
@@ -133,11 +131,9 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse, size
       }
 
       std::vector<std::vector<std::string>> sums;
-      for(size_t index = 0; index < numCount; ++index) {
+      for (size_t index = 0; index < numCount; ++index) {
         sums.push_back(sumQueues[threadNumber]->pop().sums);
       }
-
-      // TODO(any): send string with sums 
       return webApp.serve(httpResponse, SUMS, sums);
     }
     /// Number requested too big (2^63 or greater)
@@ -156,16 +152,17 @@ void WebServer::startCalculators() {
   for (size_t index = 0; index < threadCount; ++index) {
     calculators[index] = new AssemblerCalculator(stopCondition);
     calculators[index]->setConsumingQueue(&this->numberQueue);
-    calculators[index]->setProducingQueue(this->dispatcher->getConsumingQueue());
+    calculators[index]->setProducingQueue(this->dispatcher
+      ->getConsumingQueue());
     calculators[index]->startThread();
   }
 }
 
-void WebServer::stopProcessing(){
+void WebServer::stopProcessing() {
   size_t threadCount = calculators.size();
   GoldbachNumber numberStopCondition;
   numberStopCondition.threadNumber = INT64_MAX;
-  for (size_t index = 0; index < threadCount; ++index){
+  for (size_t index = 0; index < threadCount; ++index) {
     numberQueue.push(numberStopCondition);
   }
   GoldbachSums dispatcherStopCondition;

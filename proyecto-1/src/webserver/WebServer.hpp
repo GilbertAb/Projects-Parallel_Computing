@@ -57,11 +57,12 @@ class WebServer : public HttpServer {
   /// @param Gets the users request and the response that will be modified by
   /// the program.
   /// @return true on success and the server will continue handling requests
-  bool route(HttpRequest& httpRequest, HttpResponse& httpResponse, size_t threadNumber);
+  bool route(HttpRequest& httpRequest, HttpResponse& httpResponse,
+    size_t threadNumber);
 
-  protected:
-    void startCalculators();
-    void registerQueues();
+ protected:
+  void startCalculators();
+  void registerQueues();
 };
 
 #endif  // WEBSERVER_H

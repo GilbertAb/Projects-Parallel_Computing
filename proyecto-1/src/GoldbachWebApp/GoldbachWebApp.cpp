@@ -32,7 +32,6 @@ bool GoldbachWebApp::serve(HttpResponse& httpResponse, int serve
 
 void GoldbachWebApp::serveGoldbachSums(HttpResponse& httpResponse
   , const std::vector<std::vector<std::string>>& sums) {
-
   std::string title = "Goldbach sums results";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
@@ -45,8 +44,9 @@ void GoldbachWebApp::serveGoldbachSums(HttpResponse& httpResponse
     if (sums[index][0].rfind("NA") != std::string::npos) {
       httpResponse.body() <<  " class=\"err\"";
     }
-    httpResponse.body() << ">" << sums[index][0].substr(0, sums[index][0].rfind(":")) << "</h2>\n"
-      << "  <p>" << sums[index][0] <<"</p>\n";
+    httpResponse.body() << ">" << sums[index][0].substr(0,
+      sums[index][0].rfind(":")) << "</h2>\n" << "  <p>" << sums[index][0]
+      <<"</p>\n";
     if (sums[index].size() > 1) {
       httpResponse.body() << "  <ol>\n";
       for (size_t sum_index = 1; sum_index < sums[index].size(); ++sum_index) {

@@ -7,8 +7,9 @@
 #include "Socket.hpp"
 
 HttpConnectionHandler::HttpConnectionHandler(HttpServer* httpServer
-  , Socket stopCondition, size_t threadNumber) : Consumer(nullptr, stopCondition, false),
-  httpServer(httpServer), threadNumber(threadNumber) {}
+  , Socket stopCondition, size_t threadNumber)
+  : Consumer(nullptr, stopCondition, false), httpServer(httpServer),
+  threadNumber(threadNumber) {}
 
 int HttpConnectionHandler::run() {
   // Start the forever loop to consume all the connections that arrive

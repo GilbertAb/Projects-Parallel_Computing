@@ -30,17 +30,13 @@ struct GoldbachSums {
 class AssemblerCalculator
   : public Assembler<GoldbachNumber, GoldbachSums>
   , public GoldbachCalculator {
- 
- DISABLE_COPY(AssemblerCalculator);
+  DISABLE_COPY(AssemblerCalculator);
 
  public:
-  AssemblerCalculator(GoldbachNumber stopCondition);
+  explicit AssemblerCalculator(GoldbachNumber stopCondition);
   ~AssemblerCalculator();
   void consume(const GoldbachNumber& data) override;
-  //void produce(const GoldbachSums& data) override;
   int run() override;
-
 };
 
-#endif // ASSEMBLERCALCULATOR_HPP
-
+#endif  // ASSEMBLERCALCULATOR_HPP

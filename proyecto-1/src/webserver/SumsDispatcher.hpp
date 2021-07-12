@@ -13,12 +13,10 @@
 class SumsDispatcher : public Dispatcher<size_t, GoldbachSums> {
   DISABLE_COPY(SumsDispatcher);
 
- protected:
-
  public:
   /// Constructor
   explicit SumsDispatcher(GoldbachSums stopCondition);
-  /// Start redirecting network messages
+  /// Start
   int run() override;
   /// This method extracts the key from a data stored in the fromQueue
   size_t extractKey(const GoldbachSums& data) const override;

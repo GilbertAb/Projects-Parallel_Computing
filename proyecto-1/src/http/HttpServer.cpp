@@ -25,7 +25,8 @@ void HttpServer::startConsumers() {
   Socket stopCondition;
   this->consumers.resize(this->consumerCount);
   for ( size_t index = 0; index < this->consumerCount; ++index ) {
-    this->consumers[index] = new HttpConnectionHandler(this, stopCondition, index);
+    this->consumers[index] = new HttpConnectionHandler(this, stopCondition,
+      index);
     assert(this->consumers[index]);
     this->consumers[index]->setConsumingQueue(&this->socketQueue);
     this->consumers[index]->startThread();
