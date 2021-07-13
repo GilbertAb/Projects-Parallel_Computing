@@ -5,33 +5,9 @@
 GoldbachWebApp::GoldbachWebApp() {}
 GoldbachWebApp::~GoldbachWebApp() {}
 
-bool GoldbachWebApp::serve(HttpResponse& httpResponse, int serve
+bool GoldbachWebApp::serveGoldbachSums(HttpResponse& httpResponse
   , const std::vector<std::vector<std::string>>& sums) {
-  // Set HTTP response metadata (headers)
-  httpResponse.setHeader("Server", "AttoServer v1.0");
-  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
-
-  // Build the body of the response
-  switch (serve) {
-  case SUMS:
-    serveGoldbachSums(httpResponse, sums);
-    break;
-
-  case HOME_PAGE:
-    serveHomepage(httpResponse);
-    break;
-
-  case NOT_FOUND:
-    httpResponse.setStatusCode(404);
-    serveNotFound(httpResponse);
-    break;
-  }
-  // Send the response to the client (user agent)
-  return httpResponse.send();
-}
-
-void GoldbachWebApp::serveGoldbachSums(HttpResponse& httpResponse
-  , const std::vector<std::vector<std::string>>& sums) {
+  setHeader(httpResponse);
   std::string title = "Goldbach sums results";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
@@ -57,9 +33,12 @@ void GoldbachWebApp::serveGoldbachSums(HttpResponse& httpResponse
   }
     httpResponse.body() << "  <hr><p><a href=\"/\">Back</a></p>\n"
     << "</html>\n";
+
+  return httpResponse.send();
 }
 
-void GoldbachWebApp::serveHomepage(HttpResponse& httpResponse) {
+bool GoldbachWebApp::serveHomepage(HttpResponse& httpResponse) {
+  setHeader(httpResponse);
   // Build the body of the response
   std::string title = "Goldbach sums";
   httpResponse.body() << "<!DOCTYPE html>\n"
@@ -74,9 +53,12 @@ void GoldbachWebApp::serveHomepage(HttpResponse& httpResponse) {
     << "    <button type=\"submit\">Calculate</button>\n"
     << "  </form>\n"
     << "</html>\n";
+
+  return httpResponse.send();
 }
 
-void GoldbachWebApp::serveNotFound(HttpResponse& httpResponse) {
+bool GoldbachWebApp::serveNotFound(HttpResponse& httpResponse) {
+  setHeader(httpResponse);
   std::string title = "Not found";
   httpResponse.body() << "<!DOCTYPE html>\n"
     << "<html lang=\"en\">\n"
@@ -87,4 +69,11 @@ void GoldbachWebApp::serveNotFound(HttpResponse& httpResponse) {
     << "  <p>The requested resouce was not found in this server.</p>\n"
     << "  <hr><p><a href=\"/\">Homepage</a></p>\n"
     << "</html>\n";
+
+  return httpResponse.send();
+}
+
+void GoldbachWebApp::setHeader(HttpResponse& httpResponse) {
+  httpResponse.setHeader("Server", "AttoServer v1.0");
+  httpResponse.setHeader("Content-type", "text/html; charset=ascii");
 }

@@ -98,7 +98,7 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
   size_t threadNumber) {
   /// If the home page was asked
   if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/") {
-    return webApp.serve(httpResponse, HOME_PAGE);
+    return webApp.serveHomepage(httpResponse);
   }
   std::smatch matches;
 
@@ -134,14 +134,14 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
       for (size_t index = 0; index < numCount; ++index) {
         sums.push_back(sumQueues[threadNumber]->pop().sums);
       }
-      return webApp.serve(httpResponse, SUMS, sums);
+      return webApp.serveGoldbachSums(httpResponse, sums);
     }
     /// Number requested too big (2^63 or greater)
   } catch (const std::out_of_range& oor) {
-      return webApp.serve(httpResponse, NOT_FOUND);
+      return webApp.serveNotFound(httpResponse);
   }
   /// Unrecognized request
-  return webApp.serve(httpResponse, NOT_FOUND);
+  return webApp.serveNotFound(httpResponse);
 }
 
 void WebServer::startCalculators() {
