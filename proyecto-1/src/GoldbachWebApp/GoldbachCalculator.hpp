@@ -7,6 +7,8 @@
 #include <vector>
 
 class GoldbachCalculator {
+  // WARNING: This class should never have attributes because race condition
+  // problems will appear.
  protected:
   /**
   * @brief Verifies if a number is prime or not, then returns the result.
