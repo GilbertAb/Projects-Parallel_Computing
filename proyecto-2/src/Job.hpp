@@ -16,9 +16,10 @@
  */
 class Job {
  private:
-  std::vector<Map*> map; /**< Array with the Map requested */
-  std::vector<int64_t> days;   //< Array with the days aligned in order with
-                              //   Map
+  /**< Array with the Map requested */
+  std::vector<Map*> map;
+  /**< Array with the days aligned in order with Map */
+  std::vector<int64_t> days;   
 
  public:
   /**

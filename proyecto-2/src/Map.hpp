@@ -16,10 +16,15 @@
  */ 
 class Map {
  private:
-  std::string map_name; /**< Name of the map without .txt extension */
-  size_t rows;          /**< Number of rows of the map */
-  size_t columns;       /**< Number of columns of the map */
-  char** current_day_map;           /**< Matrix of chars representing the map */
+  /**< Name of the map without .txt extension */
+  std::string map_name;
+  /**< Number of rows of the map */
+  size_t rows;
+  /**< Number of columns of the map */
+  size_t columns;
+  /**< Matrix of chars representing the map */
+  char** current_day_map;
+  /**< Copy of the map used to advance map to it's next day state */
   char** next_day_map;
 
  public:
