@@ -1,7 +1,7 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
-#ifndef FOREST_H
-#define FOREST_H
+#ifndef MAP_H
+#define MAP_H
 
 #include <cstdlib>
 #include <string>
@@ -14,7 +14,7 @@
  *  - 'l' represents a lake cell
  *  - '-' represents a meadow cell
  */ 
-class Forest {
+class Map {
  private:
   std::string map_name; /**< Name of the map without .txt extension */
   size_t rows;          /**< Number of rows of the map */
@@ -29,20 +29,20 @@ class Forest {
    * @param columns Number of columns of the map
    * @param map_name map file name without file extension
    */
-  Forest(size_t rows, size_t columns, std::string map_name);
+  Map(size_t rows, size_t columns, std::string map_name);
 
   /**
    * Destructor.
    * Frees memory used by map;
    */
-  ~Forest();
+  ~Map();
 
   /**
    * @brief Initializes the cells of the map matrix.
    * @param rows number of rows of the matrix
    * @param columns number of columns of the matrix
    */
-  void init_forest(size_t rows, size_t columns);
+  void init_map(size_t rows, size_t columns);
 
   /**
    * @brief Updates cell to its next day state.
@@ -53,7 +53,7 @@ class Forest {
    *    lake
    *  - Drought: if cell is lake and has less than 3 lake neighbors then cell
    *    becomes meadow
-   *  - Reforestation: if cell is meadow and has at least 3 tree neighbors then
+   *  - Remapation: if cell is meadow and has at least 3 tree neighbors then
    *    cell becomes tree
    *  - Overcrowding: if cell is tree and has more than 4 tree neighbors then
    *    cell becomes meadow
@@ -115,4 +115,4 @@ class Forest {
   std::string to_string();
 };
 
-#endif  // FOREST_H
+#endif  // MAP_H

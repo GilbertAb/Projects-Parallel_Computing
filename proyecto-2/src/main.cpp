@@ -1,10 +1,9 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
-// TODO(KEVIN) fix linter warnings
 #include <unistd.h>
 #include <iostream>
 #include <stdexcept>
-#include "Island.hpp"
+#include "Job.hpp"
 
 int main(int argc, char* argv[]) {
   int error = EXIT_SUCCESS;
@@ -18,9 +17,9 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    Island island;
-    island.get_job(argv[1]);
-    island.simulate_days(island.create_output_directory(),
+    Job job;
+    job.get_job(argv[1]);
+    job.simulate_days(job.create_output_directory(),
       thread_count);
     } catch (const std::runtime_error& e) {
       std::cerr << "Error: " << e.what() <<'\n';

@@ -1,20 +1,20 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
 #include <iostream>
-#include "Forest.hpp"
+#include "Map.hpp"
 
 const char row_dis[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
 const char col_dis[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 
-Forest::Forest(size_t rows, size_t columns, std::string map_name) {
+Map::Map(size_t rows, size_t columns, std::string map_name) {
   map = NULL;
   this->map_name = map_name;
-  init_forest(rows, columns);
+  init_map(rows, columns);
   this->rows = rows;
   this->columns = columns;
 }
 
-Forest::~Forest() {
+Map::~Map() {
   if (map != NULL) {
     for (size_t index = 0; index < rows; ++index) {
           delete[] map[index];
@@ -23,7 +23,7 @@ Forest::~Forest() {
   delete[] map;
 }
 
-void Forest::init_forest(size_t rows, size_t columns) {
+void Map::init_map(size_t rows, size_t columns) {
   if (!map) {
     map = new char*[rows];
     for (size_t index = 0; index < rows; ++index) {
@@ -32,7 +32,7 @@ void Forest::init_forest(size_t rows, size_t columns) {
   }
 }
 
-void Forest::update_cell(size_t row, size_t column, char** next_day) {
+void Map::update_cell(size_t row, size_t column, char** next_day) {
   char tree_count = 0, lake_count = 0, meadow_count = 0;
   check_neighbors(tree_count, lake_count, meadow_count, row, column);
   switch (map[row][column]) {
@@ -61,11 +61,11 @@ void Forest::update_cell(size_t row, size_t column, char** next_day) {
   }
 }
 
-bool Forest::in_bounds(size_t row, size_t column, size_t index) {
+bool Map::in_bounds(size_t row, size_t column, size_t index) {
   return row + row_dis[index] < rows && column + col_dis[index] < columns;
 }
 
-void Forest::check_neighbors(char& tree_count, char& lake_count,
+void Map::check_neighbors(char& tree_count, char& lake_count,
   char& meadow_count, size_t row, size_t column) {
   for (size_t index = 0; index < 8; ++index) {
     if (in_bounds(row, column, index)) {
@@ -86,7 +86,7 @@ void Forest::check_neighbors(char& tree_count, char& lake_count,
   }
 }
 
-void Forest::end_day() {
+void Map::end_day() {
   char** next_day = new char*[rows];
   for (size_t index = 0; index < rows; ++index) {
     next_day[index] = new char[columns];
@@ -105,21 +105,21 @@ void Forest::end_day() {
   map = next_day;
 }
 
-void Forest::set_cell(size_t row, size_t col, char data) {
+void Map::set_cell(size_t row, size_t col, char data) {
   map[row][col] = data;
 }
 
-std::string Forest::to_string() {
-  std::string forest_str;
+std::string Map::to_string() {
+  std::string map_str;
   for (size_t row = 0; row < rows; ++row) {
     for (size_t col = 0; col < columns; ++col) {
-      forest_str += map[row][col];
+      map_str += map[row][col];
     }
-    forest_str += '\n';
+    map_str += '\n';
   }
-  return forest_str;
+  return map_str;
 }
 
-std::string Forest::get_map_name() {
+std::string Map::get_map_name() {
   return this->map_name;
 }

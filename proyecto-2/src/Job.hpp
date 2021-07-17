@@ -1,36 +1,36 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
-#ifndef ISLAND_H
-#define ISLAND_H
+#ifndef JOB_H
+#define JOB_H
 
 #include <fstream>
 #include <string>
 #include <vector>
-#include "Forest.hpp"
+#include "Map.hpp"
 /**
- * @brief Saves the Forests received and the days requested for each.
+ * @brief Saves the Maps received and the days requested for each.
  * @details Recieves the input from the user and transforms the
  * text files into functional maps where operations can be performed and simulates
  * the passing of the resquested days generating the number of output files
  * requested by the user
  */
-class Island {
+class Job {
  private:
-  std::vector<Forest*> forest; /**< Array with the Forest requested */
+  std::vector<Map*> map; /**< Array with the Map requested */
   std::vector<int64_t> days;   //< Array with the days aligned in order with
-                              //   Forest
+                              //   Map
 
  public:
   /**
    * Constructor.
    */
-  Island();
+  Job();
 
   /**
    * Destructor.
-   * Frees the memory of the Forest array;
+   * Frees the memory of the Map array;
    */
-  ~Island();
+  ~Job();
 
   /**
    * @brief Gets the map path, maps, days and map name from the file and send
@@ -43,21 +43,21 @@ class Island {
   void get_job(const char* filename);
 
   /**
-   * @brief Creates and saves the Forests with the days requested
+   * @brief Creates and saves the Maps with the days requested
    * @details Retrieves the map size and map content from the map file
    * to make a copy, save and relate it to the maps name and days requested
    * @param map_path the path where the file containing the map is
    * @param map_name name related to the map that will be saved
    * @param days number of days related to the map
    */
-  void create_forest(std::string map_path, std::string map_name, int64_t days);
+  void create_map(std::string map_path, std::string map_name, int64_t days);
 
   /**
    * @brief Simulates the requested number of days to put in the output
-   * @details Goes through each Forest saved and apply the number of days saved
+   * @details Goes through each Map saved and apply the number of days saved
    * related to it generating output files depending on the request made
    * (prints all the results or just the last day), and its able to distribute
-   * the processing of a forest between a requested amount of threads
+   * the processing of a map between a requested amount of threads
    * @param output_path the file path where the results are going to be stored
    * @param thread_count number of threads in which the work will be distributed
    */
@@ -78,4 +78,4 @@ class Island {
   bool is_open(std::fstream& fstream, std::string file);
 };
 
-#endif  // ISLAND_H
+#endif  // JOB_H
