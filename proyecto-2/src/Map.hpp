@@ -19,7 +19,8 @@ class Map {
   std::string map_name; /**< Name of the map without .txt extension */
   size_t rows;          /**< Number of rows of the map */
   size_t columns;       /**< Number of columns of the map */
-  char** map;           /**< Matrix of chars representing the map */
+  char** current_day_map;           /**< Matrix of chars representing the map */
+  char** next_day_map;
 
  public:
   /**
