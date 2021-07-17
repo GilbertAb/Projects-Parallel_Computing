@@ -24,7 +24,7 @@ void Job::get_job(const char* filename) {
     directory = sfilename.substr(0, last_slash_pos + 1);
   }
   std::string map_name;
-  int64_t days;
+  int64_t days = 0;
   std::fstream fstream(filename, std::ios::in);
   if (is_open(fstream, filename)) {
     std::string job_line;
@@ -43,7 +43,7 @@ void Job::create_map(std::string map_path, std::string map_name,
   int64_t days) {
   std::fstream fstream(map_path, std::ios::in);
   if (is_open(fstream, map_path)) {
-    size_t rows, columns, index = 0;
+    size_t rows = 0, columns = 0, index = 0;
     std::string map_line;
     std::getline(fstream, map_line);
     std::sscanf(map_line.c_str(), "%zu %zu", &rows, &columns);
