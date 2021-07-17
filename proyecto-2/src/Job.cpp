@@ -73,10 +73,6 @@ void Job::simulate_days(std::string output_directory_path,
       days[index] = -days[index];
       output_at_day = days[index];
     }
-    // OpenMP test
-    #pragma omp critical
-    std::cout<< "thread: " << omp_get_thread_num() << ", map= "
-      << map[index]->get_map_name() << std::endl;
 
     for (size_t day = 0; day < (size_t)days[index]; ++day) {
       std::string output_path = output_directory_path +
