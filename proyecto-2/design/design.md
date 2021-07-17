@@ -12,10 +12,55 @@ Class interaction:
 
 Pseudocode:
 
- ![simulate_days](../img/simulate_days.png "Simulate Days")
+```cpp
+simulate_days():
+  for map_index := 0 to map_count do
+    for day := 0 to days[map_index]
+      map[map_index].end_day()
+    end for
+  end for
+```
+```cpp
+end_day():
+  next_day_map := current_day_map
 
- ![end_day](../img/end_day.png "End Day")
+  for row := 0 to row_count
+    for column := 0 to column_count
+      update_cell(row, col, next_day_map)
+    end for
+  end for
+  current_day_map := address of next_day_map
+```
+```cpp
+update_cell(row, column, next_day_map):
+  tree_count := tree_neighbors()
+  lake_count := lake_neighbors()
+  meadow_count := meadow_neighbors()
 
- ![update_cell](../img/update_cell.png "Update Cell")
+  switch (map[row][columns])
+    case 'a':
+      if lake_count >= 4 then
+        next_day_map[row][column] := 'l'
+      else if tree count > 4 then
+        next_day_map[row][column] := '-'
+      else
+        next_day_map[row][column] := 'a'
+      end if
+      break switch
 
- 
+    case 'l':
+      if lake_count < 3 then
+        next_day_map[row][column] := '-'
+      else
+        next_day_map[row][column] := 'l'
+      end if
+      break switch
+
+    case '-':
+      if tree_count >= 3 then
+        next_day_map[row][column] := 'a'
+      else
+        next_day_map[row][column] := '-'
+      end if
+      break switch
+```
