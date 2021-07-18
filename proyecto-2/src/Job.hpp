@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "common.hpp"
 #include "Map.hpp"
 /**
  * @brief Saves the Maps received and the days requested for each.
@@ -15,6 +16,7 @@
  * requested by the user
  */
 class Job {
+ DISABLE_COPY(Job);
  private:
   /**< Array with the Map requested */
   std::vector<Map*> map;
