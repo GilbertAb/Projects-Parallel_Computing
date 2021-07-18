@@ -34,6 +34,14 @@ class Job {
    * Frees the memory of the Map array;
    */
   ~Job();
+  
+  /**
+   * @brief Gets the arguments to start running the program.
+   * @param argc number of arguments introduced by the user
+   * @param argv array of arguments intruduced by the user
+   * @return if it was a succes or a fail
+   */
+  int run(int argc, char* argv[]);
 
   /**
    * @brief Gets the map path, maps, days and map name from the file and send

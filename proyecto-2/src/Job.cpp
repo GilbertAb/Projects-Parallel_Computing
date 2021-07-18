@@ -4,6 +4,8 @@
 #include <iostream>
 #include <omp.h>
 #include <sstream>
+#include <stdexcept>
+#include <unistd.h>
 #include "Job.hpp"
 
 
@@ -14,6 +16,32 @@ Job::~Job() {
   for (size_t index = 0; index < map.size(); ++index) {
     delete map[index];
   }
+}
+
+int run(int argc, char* argv[]){
+  int error = EXIT_SUCCESS;
+  if (argc == 2 || argc == 3) {
+    try {
+    int64_t thread_count = sysconf(_SC_NPROCESSORS_ONLN);
+    if (argc == 3) {
+      if (sscanf(argv[2], "%zu", &thread_count) != 1) {
+        std::cerr << "error: invalid thread count\n";
+        return error;
+      }
+    }
+    get_job(argv[1]);
+    simulate_days(create_output_directory(),
+      thread_count);
+    } catch (const std::runtime_error& e) {
+      std::cerr << "Error: " << e.what() <<'\n';
+      error = EXIT_FAILURE;
+    }
+  } else {
+    std::cerr << "Invalid number of arguments\nUsage:"
+      "executable[path to job]\n";
+    error = EXIT_FAILURE;
+  }
+  return error;
 }
 
 void Job::get_job(const char* filename) {
