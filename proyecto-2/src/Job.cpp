@@ -22,16 +22,16 @@ int run(int argc, char* argv[]){
   int error = EXIT_SUCCESS;
   if (argc == 2 || argc == 3) {
     try {
-    int64_t thread_count = sysconf(_SC_NPROCESSORS_ONLN);
-    if (argc == 3) {
-      if (sscanf(argv[2], "%zu", &thread_count) != 1) {
-        std::cerr << "error: invalid thread count\n";
-        return error;
+      int64_t thread_count = sysconf(_SC_NPROCESSORS_ONLN);
+      if (argc == 3) {
+        if (sscanf(argv[2], "%zu", &thread_count) != 1) {
+          std::cerr << "error: invalid thread count\n";
+          return error;
+        }
       }
-    }
-    get_job(argv[1]);
-    simulate_days(create_output_directory(),
-      thread_count);
+      get_job(argv[1]);
+      simulate_days(create_output_directory(),
+        thread_count);
     } catch (const std::runtime_error& e) {
       std::cerr << "Error: " << e.what() <<'\n';
       error = EXIT_FAILURE;
@@ -79,14 +79,18 @@ void Job::create_map(std::string map_path, std::string map_name,
     buffer >> rows;
     buffer >> columns;
     Map* map = new Map(rows, columns, map_name);
-    for (size_t row = 0; row < rows; ++row) {
-      for (size_t col = 0; col < columns; ++col) {
-      buffer >> cell_char;
-      map->set_cell(row, col, cell_char);
+    if(map) {
+      for (size_t row = 0; row < rows; ++row) {
+        for (size_t col = 0; col < columns; ++col) {
+        buffer >> cell_char;
+        map->set_cell(row, col, cell_char);
+        this->map.push_back(map);
+        this->days.push_back(days);
+        }
       }
+    } else {
+      std::cerr << "Could not create map\n";
     }
-    this->map.push_back(map);
-    this->days.push_back(days);
     fstream.close();
   }
 }
