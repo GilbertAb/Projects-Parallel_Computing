@@ -26,7 +26,8 @@ void Map::init_map(size_t rows, size_t columns) {
   }
 }
 
-void Map::update_cell(size_t row, size_t column, std::vector<std::vector<char>>& next_day) {
+void Map::update_cell(size_t row, size_t column,
+  std::vector<std::string>& next_day) {
   char tree_count = 0, lake_count = 0, meadow_count = 0;
   check_neighbors(tree_count, lake_count, meadow_count, row, column);
   switch (current_day_map[row][column]) {
@@ -97,10 +98,7 @@ void Map::set_cell(size_t row, size_t col, char data) {
 std::string Map::to_string() {
   std::string map_str;
   for (size_t row = 0; row < rows; ++row) {
-    for (size_t col = 0; col < columns; ++col) {
-      map_str += current_day_map[row][col];
-    }
-    map_str += '\n';
+    map_str += current_day_map[row] +'\n';
   }
   return map_str;
 }

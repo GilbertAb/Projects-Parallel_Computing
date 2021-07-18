@@ -24,9 +24,9 @@ class Map {
   /**< Number of columns of the map */
   size_t columns;
   /**< Matrix of chars representing the map */
-  std::vector<std::vector<char>> current_day_map;
+  std::vector<std::string> current_day_map;
   /**< Copy of the map used to advance map to it's next day state */
-  std::vector<std::vector<char>> next_day_map;
+  std::vector<std::string> next_day_map;
 
  public:
   /**
@@ -70,7 +70,8 @@ class Map {
    * @param column column index of cell
    * @param next_day matrix to store the updated cell
    */
-  void update_cell(size_t row, size_t column, std::vector<std::vector<char>>& next_day);
+  void update_cell(size_t row, size_t column,
+    std::vector<std::string>& next_day);
 
   /**
    * @brief Count adjacent neighbors.
