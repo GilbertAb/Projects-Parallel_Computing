@@ -16,12 +16,13 @@
  * requested by the user
  */
 class Job {
- DISABLE_COPY(Job);
+  DISABLE_COPY(Job);
+
  private:
   /**< Array with the Map requested */
   std::vector<Map*> map;
   /**< Array with the days aligned in order with Map */
-  std::vector<int64_t> days;   
+  std::vector<int64_t> days;
 
  public:
   /**
@@ -34,7 +35,7 @@ class Job {
    * Frees the memory of the Map array;
    */
   ~Job();
-  
+
   /**
    * @brief Gets the arguments to start running the program.
    * @param argc number of arguments introduced by the user
