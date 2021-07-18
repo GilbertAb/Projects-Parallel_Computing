@@ -1,9 +1,9 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
-#include <omp.h>
-#include <cstring>
 #include <fstream>
 #include <iostream>
+#include <omp.h>
+#include <sstream>
 #include "Job.hpp"
 
 
@@ -27,15 +27,15 @@ void Job::get_job(const char* filename) {
   int64_t days = 0;
   std::fstream fstream(filename, std::ios::in);
   if (is_open(fstream, filename)) {
-    std::string job_line;
-    char buffer[256];
-    while (std::getline(fstream, job_line)) {
-      std::sscanf(job_line.c_str(), "%s%ld", buffer, &days);
-      map_name.assign(buffer, strlen(buffer));
-      map_name = map_name.substr(0, job_line.rfind("."));
+    std::stringstream buffer; 
+    buffer << fstream.rdbuf();
+    fstream.close();
+    while (buffer.rdbuf()->in_avail()) {
+      buffer >> map_name;
+      buffer >> days;
+      map_name = map_name.substr(0, map_name.rfind("."));
       create_map(directory + map_name + ".txt", map_name, days);
     }
-    fstream.close();
   }
 }
 
@@ -43,15 +43,18 @@ void Job::create_map(std::string map_path, std::string map_name,
   int64_t days) {
   std::fstream fstream(map_path, std::ios::in);
   if (is_open(fstream, map_path)) {
-    size_t rows = 0, columns = 0, index = 0;
-    std::string map_line;
-    std::getline(fstream, map_line);
-    std::sscanf(map_line.c_str(), "%zu %zu", &rows, &columns);
+    size_t rows = 0, columns = 0;
+    char cell_char;
+    std::stringstream buffer;
+    buffer << fstream.rdbuf();
+    fstream.close();
+    buffer >> rows;
+    buffer >> columns;
     Map* map = new Map(rows, columns, map_name);
-    for (size_t row = 0; row < rows; ++row, index = 0) {
-      std::getline(fstream, map_line);
+    for (size_t row = 0; row < rows; ++row) {
       for (size_t col = 0; col < columns; ++col) {
-        map->set_cell(row, col, map_line[index++]);
+      buffer >> cell_char;
+      map->set_cell(row, col, cell_char);
       }
     }
     this->map.push_back(map);

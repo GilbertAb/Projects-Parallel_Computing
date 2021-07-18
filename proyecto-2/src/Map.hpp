@@ -5,6 +5,7 @@
 
 #include <cstdlib>
 #include <string>
+#include <vector>
 /**
  * @brief Contains a Map and its related logic.
  * @details The class builds a map based on the
@@ -23,9 +24,9 @@ class Map {
   /**< Number of columns of the map */
   size_t columns;
   /**< Matrix of chars representing the map */
-  char** current_day_map;
+  std::vector<std::vector<char>> current_day_map;
   /**< Copy of the map used to advance map to it's next day state */
-  char** next_day_map;
+  std::vector<std::vector<char>> next_day_map;
 
  public:
   /**
@@ -69,7 +70,7 @@ class Map {
    * @param column column index of cell
    * @param next_day matrix to store the updated cell
    */
-  void update_cell(size_t row, size_t column, char** next_day);
+  void update_cell(size_t row, size_t column, std::vector<std::vector<char>>& next_day);
 
   /**
    * @brief Count adjacent neighbors.

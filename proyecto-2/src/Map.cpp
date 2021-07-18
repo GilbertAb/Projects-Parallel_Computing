@@ -7,37 +7,26 @@ const char row_dis[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
 const char col_dis[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 
 Map::Map(size_t rows, size_t columns, std::string map_name) {
-  current_day_map = NULL;
-  next_day_map = NULL;
   this->map_name = map_name;
   init_map(rows, columns);
   this->rows = rows;
   this->columns = columns;
 }
 
-Map::~Map() {
-  if (current_day_map != NULL) {
-    for (size_t index = 0; index < rows; ++index) {
-          delete[] current_day_map[index];
-          delete[] next_day_map[index];
-        }
-    }
-  delete[] current_day_map;
-  delete[] next_day_map;
-}
+Map::~Map() {}
 
 void Map::init_map(size_t rows, size_t columns) {
-  if (!current_day_map) {
-    current_day_map = new char*[rows];
-    next_day_map = new char*[rows];
+  if (current_day_map.capacity() == 0) {
+    current_day_map.resize(rows);
+    next_day_map.resize(rows);
     for (size_t index = 0; index < rows; ++index) {
-      current_day_map[index] = new char[columns];
-      next_day_map[index] = new char[columns];
+      current_day_map[index].resize(columns);
+      next_day_map[index].resize(columns);
     }
   }
 }
 
-void Map::update_cell(size_t row, size_t column, char** next_day) {
+void Map::update_cell(size_t row, size_t column, std::vector<std::vector<char>>& next_day) {
   char tree_count = 0, lake_count = 0, meadow_count = 0;
   check_neighbors(tree_count, lake_count, meadow_count, row, column);
   switch (current_day_map[row][column]) {
@@ -97,8 +86,7 @@ void Map::end_day() {
       update_cell(row, col, next_day_map);
     }
   }
-  for (size_t row = 0; row < rows; ++row)
-    std::copy(&next_day_map[row][0], &next_day_map[row][0]+columns, &current_day_map[row][0]);
+  current_day_map = next_day_map;
 }
 
 void Map::set_cell(size_t row, size_t col, char data) {
