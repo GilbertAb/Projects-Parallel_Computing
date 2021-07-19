@@ -9,9 +9,10 @@ LINTFILTERS=$\
 	-readability/casting,$\
 	-runtime/references
 
-CC=g++
-CC2=clang++
+CC=mpic++ -cxx=g++
+CC2=mpic++ -cxx=clang++
 CFLAGS=-g -Wall -Wextra -fopenmp -std=gnu++11
+CFLAGS2= -O3 -std=gnu++11
 LIBS=
 
 all: directory $(EXECUTABLES)
@@ -30,6 +31,11 @@ $(APPNAME)_tsan:  $(HEADERS) $(SOURCES)
 
 $(APPNAME)_ubsan:  $(HEADERS) $(SOURCES)
 	$(CC2) $(CFLAGS) -fsanitize=undefined $(SOURCES) -o bin/$(APPNAME)_ubsan $(LIBS)
+
+.PHONY: release
+release:
+	mkdir -p bin
+	$(CC) $(CFLAGS2) $(SOURCES) -o bin/$(APPNAME) $(LIBS)
 
 .PHONY: directory
 directory:

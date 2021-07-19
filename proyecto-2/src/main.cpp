@@ -2,7 +2,7 @@
 
 #include "Job.hpp"
 #include "mpi.h"
-
+//TODO(Kevin): fix linter warnings
 int main(int argc, char* argv[]) {
   if (MPI_Init(&argc, &argv) == MPI_SUCCESS) {
   Job job;

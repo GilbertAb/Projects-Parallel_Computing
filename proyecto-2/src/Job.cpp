@@ -20,6 +20,7 @@ Job::~Job() {
 
 int Job::run(int argc, char* argv[], int process_count, int rank) {
   int error = EXIT_SUCCESS;
+  //TODO(Gilbert) Move argument analisys to a mehthod
   if (argc == 2 || argc == 3) {
     try {
       int64_t thread_count = sysconf(_SC_NPROCESSORS_ONLN);
@@ -48,7 +49,7 @@ void Job::get_job(const char* filename, int process_count, int rank) {
   std::string sfilename(filename);
   std::string directory;
 
-  // Get route/directory
+  // Get path/directory
   const size_t last_slash_pos = sfilename.rfind('/');
   if (std::string::npos != last_slash_pos) {
     directory = sfilename.substr(0, last_slash_pos + 1);
@@ -68,6 +69,7 @@ void Job::get_job(const char* filename, int process_count, int rank) {
       // Separate line in map_name and days
       buffer >> map_name;
       buffer >> days;
+      // cyclic mapping
       if (index % process_count == rank) {
         std::cout << "Process " << rank << " process " << map_name << '\n';   //Remove after debugging
         map_name = map_name.substr(0, map_name.rfind("."));
@@ -116,7 +118,7 @@ void Job::create_map(std::string map_path, std::string map_name,
 void Job::simulate_days(std::string output_directory_path,
   size_t thread_count) {
   #pragma omp parallel for num_threads(thread_count) default(none) \
-    shared(std::cout, output_directory_path) schedule(static, 1)
+    shared(std::cout, output_directory_path) schedule(dynamic)
   for (size_t index = 0; index < map.size(); ++index) {
     std::fstream fstream;
     // create output file if current day is equal or greater

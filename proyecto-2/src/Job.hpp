@@ -8,6 +8,7 @@
 #include <vector>
 #include "common.hpp"
 #include "Map.hpp"
+// TODO(Kevin): update documentation. Focus on new parametes
 /**
  * @brief Saves the Maps received and the days requested for each.
  * @details Recieves the input from the user and transforms the

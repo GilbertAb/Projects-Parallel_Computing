@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
+// TODO(Kevin): check if documentation is up to date
 /**
  * @brief Contains a Map and its related logic.
  * @details The class builds a map based on the
