@@ -19,16 +19,12 @@ Job::~Job() {
 }
 
 int Job::run(int argc, char* argv[], int process_count, int rank) {
-  int error = EXIT_SUCCESS;
-  //TODO(Gilbert) Move argument analisys to a mehthod
-  if (argc == 2 || argc == 3) {
+  int error = analyze_arguments(argc, argv);
+  if (error == EXIT_SUCCESS) {
     try {
       int64_t thread_count = sysconf(_SC_NPROCESSORS_ONLN);
       if (argc == 3) {
-        if (sscanf(argv[2], "%zu", &thread_count) != 1) {
-          std::cerr << "error: invalid thread count\n";
-          return error;
-        }
+        thread_count = (int64_t)atoi(argv[2]);
       }
       get_job(argv[1], process_count, rank);
       simulate_days(create_output_directory(),
@@ -37,10 +33,6 @@ int Job::run(int argc, char* argv[], int process_count, int rank) {
       std::cerr << "Error: " << e.what() <<'\n';
       error = EXIT_FAILURE;
     }
-  } else {
-    std::cerr << "Invalid number of arguments\nUsage:"
-      "executable[path to job]\n";
-    error = EXIT_FAILURE;
   }
   return error;
 }
@@ -164,4 +156,33 @@ bool Job::is_open(std::fstream& fstream, std::string file) {
     std::cerr << "Error: could not open " << file <<"\n";
   }
   return opened;
+}
+
+int Job::analyze_arguments(int argc, char* argv[]) {
+  int error = EXIT_SUCCESS;
+  if (argc == 2 || argc == 3) {
+    if (argc == 3) {
+      if (!is_number(argv[2])) {
+        std::cerr << "error: invalid thread count\n";
+        error = EXIT_FAILURE;
+      }
+    }
+  } else {
+    std::cerr << "Invalid number of arguments\nUsage:"
+      "executable[path to job]\n";
+    error = EXIT_FAILURE;
+  }
+  return error;
+}
+
+bool Job::is_number(char* s) {
+  bool is_number = true;
+  size_t index = 0;
+  while (s[index] != '\0' && is_number) {
+    if (!std::isdigit(s[index])) {
+      is_number = false;
+    }
+    index++;
+  }
+  return is_number;
 }

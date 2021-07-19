@@ -3,6 +3,7 @@
 #ifndef JOB_H
 #define JOB_H
 
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -89,6 +90,10 @@ class Job {
    * @return a boolean result meaning if the file was succesfuly opened
    */
   bool is_open(std::fstream& fstream, std::string file);
+
+  int analyze_arguments(int argc, char* argv[]);
+
+  bool is_number(char* s);
 };
 
 #endif  // JOB_H
