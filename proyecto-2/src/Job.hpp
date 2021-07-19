@@ -97,8 +97,6 @@ class Job {
   bool is_open(std::fstream& fstream, std::string file);
 
   int analyze_arguments(int argc, char* argv[]);
-
-  bool is_number(char* s);
 };
 
 #endif  // JOB_H

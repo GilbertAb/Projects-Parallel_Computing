@@ -24,7 +24,7 @@ int Job::run(int argc, char* argv[], int process_count, int rank) {
     try {
       int64_t thread_count = sysconf(_SC_NPROCESSORS_ONLN);
       if (argc == 3) {
-        thread_count = (int64_t)atoi(argv[2]);
+        thread_count = std::stoll(argv[2]);
       }
       get_job(argv[1], process_count, rank);
       simulate_days(create_output_directory(),
@@ -163,9 +163,11 @@ int Job::analyze_arguments(int argc, char* argv[]) {
   int error = EXIT_SUCCESS;
   if (argc == 2 || argc == 3) {
     if (argc == 3) {
-      if (!is_number(argv[2])) {
+      try {
+        int64_t thread_count = std::stoll(argv[2]);
+      } catch (const std::exception& error) {
         std::cerr << "error: invalid thread count\n";
-        error = EXIT_FAILURE;
+        return false;
       }
     }
   } else {
@@ -176,14 +178,3 @@ int Job::analyze_arguments(int argc, char* argv[]) {
   return error;
 }
 
-bool Job::is_number(char* s) {
-  bool is_number = true;
-  size_t index = 0;
-  while (s[index] != '\0' && is_number) {
-    if (!std::isdigit(s[index])) {
-      is_number = false;
-    }
-    index++;
-  }
-  return is_number;
-}
