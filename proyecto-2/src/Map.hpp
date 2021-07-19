@@ -6,7 +6,6 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
-// TODO(Kevin): check if documentation is up to date
 /**
  * @brief Contains a Map and its related logic.
  * @details The class builds a map based on the
@@ -15,7 +14,7 @@
  *  - 'a' represents a tree cell
  *  - 'l' represents a lake cell
  *  - '-' represents a meadow cell
- */ 
+ */  
 class Map {
  private:
   /**< Name of the map without .txt extension */
@@ -24,7 +23,7 @@ class Map {
   size_t rows;
   /**< Number of columns of the map */
   size_t columns;
-  /**< Matrix of chars representing the map */
+  /**< Vector of strings representing the char matrix for the map */
   std::vector<std::string> current_day_map;
   /**< Copy of the map used to advance map to it's next day state */
   std::vector<std::string> next_day_map;

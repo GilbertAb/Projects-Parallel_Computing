@@ -1,12 +1,12 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
+#include "Job.hpp"
+#include <unistd.h>
 #include <omp.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include <unistd.h>
-#include "Job.hpp"
 
 
 
@@ -63,7 +63,8 @@ void Job::get_job(const char* filename, int process_count, int rank) {
       buffer >> days;
       // cyclic mapping
       if (index % process_count == rank) {
-        std::cout << "Process " << rank << " process " << map_name << '\n';   //Remove after debugging
+        // Remove after debugging
+        std::cout << "Process " << rank << " process " << map_name << '\n';
         map_name = map_name.substr(0, map_name.rfind("."));
         // Create map and store in map vector
         create_map(directory + map_name + ".txt", map_name, days);
