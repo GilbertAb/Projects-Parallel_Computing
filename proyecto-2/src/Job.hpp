@@ -42,7 +42,7 @@ class Job {
    * @param argv array of arguments intruduced by the user
    * @return if it was a succes or a fail
    */
-  int run(int argc, char* argv[]);
+  int run(int argc, char* argv[], int process_count, int rank);
 
   /**
    * @brief Gets the map path, maps, days and map name from the file and send
@@ -52,7 +52,7 @@ class Job {
    * repeats the process until every map mentioned in job is sent
    * @param filename path introduced by the user where job is supossed to be
    */
-  void get_job(const char* filename);
+  void get_job(const char* filename, int process_count, int rank);
 
   /**
    * @brief Creates and saves the Maps with the days requested

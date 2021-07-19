@@ -18,7 +18,7 @@ Job::~Job() {
   }
 }
 
-int Job::run(int argc, char* argv[]) {
+int Job::run(int argc, char* argv[], int process_count, int rank) {
   int error = EXIT_SUCCESS;
   if (argc == 2 || argc == 3) {
     try {
@@ -29,7 +29,7 @@ int Job::run(int argc, char* argv[]) {
           return error;
         }
       }
-      get_job(argv[1]);
+      get_job(argv[1], process_count, rank);
       simulate_days(create_output_directory(),
         thread_count);
     } catch (const std::runtime_error& e) {
@@ -44,7 +44,7 @@ int Job::run(int argc, char* argv[]) {
   return error;
 }
 
-void Job::get_job(const char* filename) {
+void Job::get_job(const char* filename, int process_count, int rank) {
   std::string sfilename(filename);
   std::string directory;
 
@@ -64,14 +64,16 @@ void Job::get_job(const char* filename) {
     buffer << fstream.rdbuf();
     fstream.close();
     // Reads every line of job file
-    while (buffer.rdbuf()->in_avail()) {
+    for (int index = 0; buffer.rdbuf()->in_avail(); ++index) {
       // Separate line in map_name and days
       buffer >> map_name;
       buffer >> days;
-      // Remove ".txt" part of map_name
-      map_name = map_name.substr(0, map_name.rfind("."));
-      // Create map and store in map vector
-      create_map(directory + map_name + ".txt", map_name, days);
+      if (index % process_count == rank) {
+        std::cout << "Process " << rank << " process " << map_name << '\n';   //Remove after debugging
+        map_name = map_name.substr(0, map_name.rfind("."));
+        // Create map and store in map vector
+        create_map(directory + map_name + ".txt", map_name, days);
+      }
     }
   }
 }
