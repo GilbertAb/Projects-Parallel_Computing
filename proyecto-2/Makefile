@@ -12,7 +12,7 @@ LINTFILTERS=$\
 CC=mpic++ -cxx=g++
 CC2=mpic++ -cxx=clang++
 CFLAGS=-g -Wall -Wextra -fopenmp -std=gnu++11
-CFLAGS2= -O3 -std=gnu++11
+CFLAGS2= -O3 -std=gnu++11 -fopenmp
 LIBS=
 
 all: directory $(EXECUTABLES)

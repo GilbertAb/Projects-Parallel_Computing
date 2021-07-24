@@ -24,10 +24,14 @@ class WebServer : public HttpServer {
   const char* port = DEFAULT_PORT;
   /// Web app that handles the calculation of goldbach
   GoldbachWebApp webApp;
-
+  /// Vector with the calculators that will work concurrently
   std::vector<AssemblerCalculator*> calculators;
+  /// Consuming queue for the calculators
   Queue<GoldbachNumber> numberQueue;
+  /// Queues where the answer for the requested sums are for each thread
   std::vector<Queue<GoldbachSums>*> sumQueues;
+  /// Dispatcher incharge of delivering the answers to the respective queue
+  /// depending on the thread
   SumsDispatcher* dispatcher;
 
  public:
@@ -36,7 +40,8 @@ class WebServer : public HttpServer {
   /// Start the simulation
   /// @param Recives the arguments and the number of them written by the user
   int start(int argc, char* argv[]);
-
+  /// Sends the stop signal to the Dispatcher and the consuming queues of the
+  /// calculators to make them stop
   void stopProcessing();
 
  protected:
@@ -61,7 +66,12 @@ class WebServer : public HttpServer {
     size_t threadNumber);
 
  protected:
+  /// Makes the number of calculators equal to the amount of processors in the
+  /// machine, tells them from what queue to consume and produce, and finally
+  /// makes each calculator thread start
   void startCalculators();
+  /// Asigns the queues that have the answer so that the dispatcher knows the
+  /// queue for each connection thread
   void registerQueues();
 };
 

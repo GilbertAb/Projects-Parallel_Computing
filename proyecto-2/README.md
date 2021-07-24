@@ -94,7 +94,15 @@ In order to optimize the solution of our problem, we'll perform performance meas
 
    In this version our execution time was 1494.211 seconds (25 minutes aprox). With these results, we can conclude that this version has a better performance than the serial version, as we expected. Also, has a better performance than the version using block mapping and worse than the dynamic mapping version. Surprisingly, it has a slightly worse performance than the static cyclic mapping version, something that we weren't expecting.
 
-   ![Graph](./img/data-analysis.jpeg "Execution time and efficiency")
+   ![Graph](./img/data-analysis.png "Execution time and efficiency")
 
   As we expected, dynamic mapping had the fastest execution time, probably due to how different work units were. Dynamic mapping was the most efficient as well, as all the parallel version used the same amount of threads, then the fastest is also the most efficient. However, this results depend a lot on the input, as the size of the work units could affect which mapping method works better. For job002 input, dynamic mapping is clearly the fastest and most efficient.
+
+  ### Distributed performance analysis
+
+  With our design, we obtained the expected results, since the execution time is now lower. As work units are big, the speedup wasn't that great using 24 threads instead of 8, resulting in lower efficiency. Work units being big could've increase the serial time of the process reducing the speedup. The program could be better with a different type of mapping that allows a better distribution of the work, using a smaller work unit, unless the additional overhead for synchronization makes it too inefficient.
+
+  Also we had an unexpected problem with mpi that made the processes terminate suddenly when more than 4 processes where created. Because of that, we couldn't measure the performance of the program using 24 single-threaded processes.
+
+  ![Graph](./img/data-analysis-mpi.png "Execution time and efficiency")
  

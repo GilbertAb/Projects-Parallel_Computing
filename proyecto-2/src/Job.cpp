@@ -110,9 +110,10 @@ void Job::create_map(std::string map_path, std::string map_name,
 
 void Job::simulate_days(std::string output_directory_path,
   size_t thread_count) {
-  #pragma omp parallel for num_threads(thread_count) default(none) \
-    shared(std::cout, output_directory_path) schedule(dynamic)
-  for (size_t index = 0; index < map.size(); ++index) {
+    std::cout << thread_count << '\n';
+  #pragma omp parallel for num_threads(thread_count) \
+    shared(std::cout, output_directory_path) schedule(static)
+  for (size_t index = 0; index <= map.size(); ++index) {
     std::fstream fstream;
     // create output file if current day is equal or greater
     size_t output_at_day = 0;
@@ -167,7 +168,7 @@ int Job::analyze_arguments(int argc, char* argv[]) {
         int64_t thread_count = std::stoll(argv[2]);
       } catch (const std::exception& error) {
         std::cerr << "error: invalid thread count\n";
-        return false;
+        return EXIT_FAILURE;
       }
     }
   } else {
