@@ -145,10 +145,12 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
 }
 
 void WebServer::startCalculators() {
+  /// Gets the number of processors
   size_t threadCount = sysconf(_SC_NPROCESSORS_ONLN);
   GoldbachNumber stopCondition;
   stopCondition.threadNumber = INT64_MAX;
   calculators.resize(threadCount);
+  /// Gives each calculator the information needed to start
   for (size_t index = 0; index < threadCount; ++index) {
     calculators[index] = new AssemblerCalculator(stopCondition);
     calculators[index]->setConsumingQueue(&this->numberQueue);
@@ -162,16 +164,19 @@ void WebServer::stopProcessing() {
   size_t threadCount = calculators.size();
   GoldbachNumber numberStopCondition;
   numberStopCondition.threadNumber = INT64_MAX;
+  /// Sends the stop condition to each calculator
   for (size_t index = 0; index < threadCount; ++index) {
     numberQueue.push(numberStopCondition);
   }
   GoldbachSums dispatcherStopCondition;
   dispatcherStopCondition.threadNumber = INT64_MAX;
+  /// Sends the stop condition to the dispatchers consuming queue
   dispatcher->getConsumingQueue()->push(dispatcherStopCondition);
 }
 
 void WebServer::registerQueues() {
   sumQueues.resize(consumerCount);
+  /// Gives a queue to extract the answers from for each connection thread
   for (size_t index = 0; index < consumerCount; ++index) {
     sumQueues[index] = new Queue<GoldbachSums>();
     dispatcher->registerRedirect(index, sumQueues[index]);
