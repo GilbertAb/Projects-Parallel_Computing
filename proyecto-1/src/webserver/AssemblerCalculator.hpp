@@ -12,6 +12,7 @@
 struct GoldbachNumber {
   size_t threadNumber;
   int64_t number;
+  size_t index;
 
   bool operator==(const GoldbachNumber& other) const {
   return threadNumber == other.threadNumber;
@@ -20,6 +21,7 @@ struct GoldbachNumber {
 
 struct GoldbachSums {
   size_t threadNumber;
+  size_t index;
   std::vector<std::string> sums;
 
   bool operator==(const GoldbachSums& other) const {

@@ -16,6 +16,7 @@ int AssemblerCalculator::run() {
 void AssemblerCalculator::consume(const GoldbachNumber& data) {
   GoldbachSums sums;
   sums.threadNumber = data.threadNumber;
+  sums.index = data.index;
   (data.number % 2 == 0) ? sums.sums = strongGoldbach(data.number)
     : sums.sums = weakGoldbach(data.number);
   produce(sums);
