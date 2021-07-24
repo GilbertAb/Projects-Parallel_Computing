@@ -134,7 +134,7 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
 
       std::vector<std::vector<std::string>> sums;
       sums.resize(numCount);
-      // Consume the goldbach sums and store them in a vector 
+      // Consume the goldbach sums and store them in a vector
       // (pop sums from the queue)
       for (size_t index = 0; index < numCount; ++index) {
         GoldbachSums goldbach_sums = sumQueues[threadNumber]->pop();
