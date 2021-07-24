@@ -125,14 +125,18 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
       size_t numCount = numbers.size();
       for (size_t index = 0; index < numCount; ++index) {
         GoldbachNumber number;
+        // enviar index
         number.threadNumber = threadNumber;
         number.number = numbers[index];
+        number.index = index;
         numberQueue.push(number);
       }
 
       std::vector<std::vector<std::string>> sums;
+      sums.resize(numCount);
       for (size_t index = 0; index < numCount; ++index) {
-        sums.push_back(sumQueues[threadNumber]->pop().sums);
+        GoldbachSums goldbach_sums = sumQueues[threadNumber]->pop();
+        sums[goldbach_sums.index]= goldbach_sums.sums;
       }
       return webApp.serveGoldbachSums(httpResponse, sums);
     }
