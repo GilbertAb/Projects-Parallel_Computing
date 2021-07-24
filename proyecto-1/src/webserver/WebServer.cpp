@@ -123,9 +123,9 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
         }
       }
       size_t numCount = numbers.size();
+      // Produce the numbers (push numbers to queue)
       for (size_t index = 0; index < numCount; ++index) {
         GoldbachNumber number;
-        // enviar index
         number.threadNumber = threadNumber;
         number.number = numbers[index];
         number.index = index;
@@ -134,10 +134,13 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
 
       std::vector<std::vector<std::string>> sums;
       sums.resize(numCount);
+      // Consume the goldbach sums and store them in a vector 
+      // (pop sums from the queue)
       for (size_t index = 0; index < numCount; ++index) {
         GoldbachSums goldbach_sums = sumQueues[threadNumber]->pop();
         sums[goldbach_sums.index]= goldbach_sums.sums;
       }
+      // Send sums to response
       return webApp.serveGoldbachSums(httpResponse, sums);
     }
     /// Number requested too big (2^63 or greater)

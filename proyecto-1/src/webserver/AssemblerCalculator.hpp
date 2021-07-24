@@ -27,11 +27,6 @@ struct GoldbachSums {
   bool operator==(const GoldbachSums& other) const {
   return threadNumber == other.threadNumber;
   }
-  void operator=(const GoldbachSums& other){
-    threadNumber = other.threadNumber;
-    index = other.index;
-    sums = other.sums;
-  }
 };
 
 class AssemblerCalculator
