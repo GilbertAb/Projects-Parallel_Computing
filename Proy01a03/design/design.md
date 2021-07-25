@@ -40,3 +40,7 @@ SumsDispatcher:
   end while
 ```
 
+### Design
+
+![Design](./img/design.png "Design")
+
