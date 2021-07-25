@@ -1,5 +1,5 @@
 CXX=g++
-#DEFS=-DSIMULATION
+#DEFS=-DGOLDBACHSERVER
 DEFS=-DWEBSERVER
 FLAGS=$(strip -Wall -Wextra -std=gnu++2a $(DEFS))
 LIBS=-pthread
