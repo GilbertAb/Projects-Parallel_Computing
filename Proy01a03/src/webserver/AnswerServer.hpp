@@ -22,11 +22,11 @@ class AnswerServer : public TcpServer, public Thread {
    /// Queue with the socket connection
    Queue<Socket>* socketQueue;
    /// Queue where the answers are going to be stored
-   Queue<std::string>* answerQueue;
+   std::vector<Queue<GoldbachSums>*>* answerQueues;
    /// Saves the string from the socket in the queue
    void handleClientConnection(Socket& client);
    /// Constructor
-   AnswerServer();
+   AnswerServer(std::vector<Queue<GoldbachSums>*>* answerQueues);
    /// Destructor
    ~AnswerServer();
   public:
@@ -36,10 +36,6 @@ class AnswerServer : public TcpServer, public Thread {
    /// Puts the client socket into the queue
    /// Makes the server start receiving requests from the default port
    int run();
-   /// Gives a reference to the queue where the answer are being stored so they
-   /// can be delivered to the thread that requested them
-   /// @return A reference to the answer queue
-   Queue<std::string>* getQueue();
    /// Reads what is on the socket to save it in the answer queue
    /// This method is incharged of telling the connection handler how to handle
    /// a socket

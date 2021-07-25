@@ -19,16 +19,6 @@ struct GoldbachNumber {
   }
 };
 
-struct GoldbachSums {
-  size_t threadNumber;
-  size_t index;
-  std::vector<std::string> sums;
-
-  bool operator==(const GoldbachSums& other) const {
-  return threadNumber == other.threadNumber;
-  }
-};
-
 class AssemblerCalculator
   : public Assembler<GoldbachNumber, GoldbachSums>
   , public GoldbachCalculator {

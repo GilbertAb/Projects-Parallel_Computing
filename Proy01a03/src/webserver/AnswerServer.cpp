@@ -1,7 +1,7 @@
 #include "AnswerServer.hpp"
-AnswerServer::AnswerServer() {
+AnswerServer::AnswerServer(std::vector<Queue<GoldbachSums>*>* answerQueues) {
   /// Creates the queue with the answers
-  this->answerQueue = new Queue<std::string>();
+  this->answerQueues = answerQueues;
   connectionHandler = new AnswerHandler(this->getInstance());
   /// Makes the handler create its own socket queue and saves it
   connectionHandler->createOwnQueue();
@@ -23,12 +23,22 @@ void AnswerServer::run() {
   connectionHandler->startThread();
   this->listenForever(this->port);
 }
-Queue<std::string>* AnswerServer::getQueue() {
-  return this->answerQueue;
-}
 void AnswerServer::getSocketInfo(Socket& client) {
   std::string answer;
-  /// Gets the string message from the socket
-  client.readLine(&answer, '\0');
-  answerQueue.push(answer);
+  size_t index;
+  size_t endPos;
+  /// Gets the string message from the socket to get index
+  client.readLine(&answer, 't');
+  index = std::stoll(answer);
+  /// Gets the number of sums and the sums if requested
+  while (client.readLine(&answer, '.')) {
+    GoldbachSums sums;
+    while ( answer.find(",") != std::string::npos ) {
+      endPos = answer.find(",");
+      sums.sums.push_back(answer.substr(0,endPos));
+      answer = answer.substr(endPos+1, answer.lenght() - endPos -1);
+    }
+    sums.sums.push_back(answer);
+    answerQueues[index]->push(sums);
+  }
 }
