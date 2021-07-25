@@ -8,7 +8,7 @@
 #include "GoldbachWebApp.hpp"
 #include "HttpServer.hpp"
 #include "Queue.hpp"
-#include "SumsDispatcher.hpp"
+#include "SumsAssembler.hpp"
 
 #define DEFAULT_PORT "8080"
 
@@ -22,31 +22,27 @@ class WebServer : public HttpServer {
   ~WebServer();
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
-  /// Web app that handles the calculation of goldbach
-  GoldbachWebApp webApp;
-  /// Vector with the calculators that will work concurrently
-  std::vector<AssemblerCalculator*> calculators;
-  /// Consuming queue for the calculators
-  Queue<GoldbachNumber> numberQueue;
+  /// Server to receive results from calculators
+  AnswerServer answerServer;
   /// Queues where the answer for the requested sums are for each thread
   std::vector<Queue<GoldbachSums>*> sumQueues;
-  /// Dispatcher incharge of delivering the answers to the respective queue
+  /// Assemblers incharge of delivering the answers to the respective queue
   /// depending on the thread
-  SumsDispatcher* dispatcher;
+  std::vector<SumsAssembler> sumsAssemblers;
 
  public:
   /// Get access to the unique instance of this Singleton class
   static WebServer& getInstance();
   /// Start the simulation
-  /// @param Recives the arguments and the number of them written by the user
+  /// @param Receives the arguments and the number of them written by the user
   int start(int argc, char* argv[]);
-  /// Sends the stop signal to the Dispatcher and the consuming queues of the
+  /// Sends the stop signal to the Assemblers and the consuming queues of the
   /// calculators to make them stop
   void stopProcessing();
 
  protected:
   /// Analyze the command line arguments
-  /// @param Recives the arguments and the number of them written by the user
+  /// @param Receives the arguments and the number of them written by the user
   /// @return true if program can continue execution, false otherwise
   bool analyzeArguments(int argc, char* argv[]);
   /// Handle HTTP requests. @see HttpServer::handleHttpRequest()
@@ -66,13 +62,9 @@ class WebServer : public HttpServer {
     size_t threadNumber);
 
  protected:
-  /// Makes the number of calculators equal to the amount of processors in the
-  /// machine, tells them from what queue to consume and produce, and finally
-  /// makes each calculator thread start
-  void startCalculators();
-  /// Asigns the queues that have the answer so that the dispatcher knows the
+  /// Asigns the queues that have the answer so that the assemblers knows the
   /// queue for each connection thread
-  void registerQueues();
+  void registerAssemblers();
 };
 
 #endif  // WEBSERVER_H
