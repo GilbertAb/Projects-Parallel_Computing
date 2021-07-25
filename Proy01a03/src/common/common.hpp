@@ -19,4 +19,15 @@
 /// For data transmissions
 typedef unsigned char byte;
 
+/// Struct for the answer
+struct GoldbachSums {
+  size_t threadNumber;
+  size_t index;
+  std::vector<std::string> sums;
+
+  bool operator==(const GoldbachSums& other) const {
+  return threadNumber == other.threadNumber;
+  }
+};
+
 #endif  // COMMON_HPP
