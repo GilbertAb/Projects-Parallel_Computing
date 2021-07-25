@@ -42,5 +42,5 @@ SumsDispatcher:
 
 ### Design
 
-![Design](./img/design.png "Design")
+![Design](../img/design.png "Design")
 
