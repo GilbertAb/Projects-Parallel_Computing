@@ -5,6 +5,8 @@
 #include "Consumer.hpp"
 #include "Socket.hpp"
 
+class AnswerServer;
+
 class AnswerHandler : public Consumer<Socket> {
   protected:
    /// Server that have the method to consume the client socket
@@ -13,7 +15,7 @@ class AnswerHandler : public Consumer<Socket> {
    /// Constructor
    /// @param answerServer Server that has the intruction on how to consume the
    /// client connection
-   AnswerHandler(AnswerServer* answerServer);
+   AnswerHandler(AnswerServer* answerServer, Socket stopCondition);
    /// Method that will keep the handler consuming fron the socket queue
    /// @return The tipe of exit
    int run();

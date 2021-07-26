@@ -5,10 +5,11 @@
 
 #include <vector>
 #include "AssemblerCalculator.hpp"
+#include "AnswerServer.hpp"
 #include "GoldbachWebApp.hpp"
 #include "HttpServer.hpp"
 #include "Queue.hpp"
-#include "SumsAssembler.hpp"
+//#include "SumsAssembler.hpp"
 
 #define DEFAULT_PORT "8080"
 
@@ -23,12 +24,13 @@ class WebServer : public HttpServer {
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
   /// Server to receive results from calculators
-  AnswerServer answerServer;
+  GoldbachWebApp webApp;
+  AnswerServer* answerServer;
   /// Queues where the answer for the requested sums are for each thread
   std::vector<Queue<GoldbachSums>*> sumQueues;
   /// Assemblers incharge of delivering the answers to the respective queue
   /// depending on the thread
-  std::vector<SumsAssembler> sumsAssemblers;
+  //std::vector<SumsAssembler> sumsAssemblers;
 
  public:
   /// Get access to the unique instance of this Singleton class
@@ -38,7 +40,7 @@ class WebServer : public HttpServer {
   int start(int argc, char* argv[]);
   /// Sends the stop signal to the Assemblers and the consuming queues of the
   /// calculators to make them stop
-  void stopProcessing();
+  // void stopProcessing();
 
  protected:
   /// Analyze the command line arguments
@@ -64,7 +66,7 @@ class WebServer : public HttpServer {
  protected:
   /// Asigns the queues that have the answer so that the assemblers knows the
   /// queue for each connection thread
-  void registerAssemblers();
+  // void registerAssemblers();
 };
 
 #endif  // WEBSERVER_H

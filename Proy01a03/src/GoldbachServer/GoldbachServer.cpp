@@ -121,8 +121,9 @@ void GoldbachServer::handleSumsRequest(std::string& sumsRequested, size_t thread
     for (size_t sum = 1; sum < sums[index].size(); ++index) {
       answer_socket << ',' << sums[index][sum];
     }
-  answer_socket.send();
+    answer_socket << '.';
   }
+  answer_socket.send();
 }
 
 void GoldbachServer::startCalculators() {

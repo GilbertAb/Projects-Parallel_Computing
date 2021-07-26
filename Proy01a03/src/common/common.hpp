@@ -5,6 +5,9 @@
 #ifndef COMMON_HPP
 #define COMMON_HPP
 
+#include <string>
+#include <vector>
+
 /// Declare four of the rule-of-the-five methods
 #define DECLARE_RULE4(Class, action) \
   Class(const Class& other) = action; \

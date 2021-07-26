@@ -21,7 +21,8 @@ int GoldbachConnectionHandler::run() {
 void GoldbachConnectionHandler::consume(const Socket& client) {
   Socket cpySocket = client;
   std::string sumsRequested;
-  cpySocket.readLine(sumsRequested);
+  cpySocket.readLine(sumsRequested, '\0');
+  std::cout << "Socket connection with value" << sumsRequested << '\n';
   cpySocket.close();
 
   // If the request is not valid or an error happened

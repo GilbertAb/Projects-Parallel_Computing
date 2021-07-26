@@ -11,7 +11,7 @@ void handleSignal(int signal) {
   /* adapted from https://stackoverflow.com/questions/48378213/how-to
    -deal-with-errno-and-signal-handler-in-linux */
   int temp_errno = errno;
-  WebServer::getInstance().stopProcessing();
+  // WebServer::getInstance().stopProcessing();
   WebServer::getInstance().stopListening();
   errno = temp_errno;
 }
@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
   signal(SIGINT, handleSignal);
   signal(SIGTERM, handleSignal);
 
-  return WebServer::getInstance().start(argc, argv);;
+  return WebServer::getInstance().start(argc, argv);
 }
 
 #endif  // WEBSERVER

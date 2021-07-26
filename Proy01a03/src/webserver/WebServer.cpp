@@ -10,6 +10,7 @@
 #include "NetworkAddress.hpp"
 #include "Socket.hpp"
 #include "WebServer.hpp"
+#include "TcpClient.hpp"
 
 const char* const usage =
   "Usage: webserv [port] [max_connections]\n"
@@ -34,7 +35,13 @@ int WebServer::start(int argc, char* argv[]) {
   try {
     if (this->analyzeArguments(argc, argv)) {
       this->startConsumers();
-      this->registerAssemblers();
+      sumQueues.resize(consumerCount);
+      for (size_t index = 0; index < consumerCount; ++index) {
+        sumQueues[index] = new Queue<GoldbachSums>();
+      }
+
+      answerServer = new AnswerServer(&sumQueues, "8081");
+      answerServer ->startThread();
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
       std::cout << "web server listening on " << address.getIP()
@@ -95,44 +102,88 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
   if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/") {
     return webApp.serveHomepage(httpResponse);
   }
-  std::vector<std::vector<std::string>> sums;
-  sums.resize(numCount);
-  // Consume the goldbach sums and store them in a vector
-  // (pop sums from the queue)
-  for (size_t index = 0; index < numCount; ++index) {
-    GoldbachSums goldbach_sums = sumQueues[threadNumber]->pop();
-    sums[index]= goldbach_sums.sums;
-  }
-    // Send sums to response
-    return webApp.serveGoldbachSums(httpResponse, sums);
+  std::smatch matches;
 
+  /// If a number was asked in the form "/goldbach/1223"
+  /// or "/goldbach?number=1223%2C500"
+  try {
+    std::regex inQuery("^/goldbach(/|\\?numbers=)(-?\\d+(%2C-?\\d*)*)$");
+    if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
+      assert(matches.length() >= 3);
+      std::regex comma("%2C");
+      std::regex_search(httpRequest.getURI(), matches, comma);
+      size_t numCount = matches.size() + 1;
+      TcpClient client;
+      Socket socket = client.connect("0.0.0.0", "8081");
+      socket << threadNumber << 't';
+      std::string numberstr = matches.str(2);
+      
+      size_t startPos = numberstr.find("=");
+      socket << numberstr.substr(startPos+1, numberstr.length() - startPos - 1);
+      socket.send();
+
+      std::vector<std::vector<std::string>> sums;
+      sums.resize(numCount);
+      // Consume the goldbach sums and store them in a vector
+      // (pop sums from the queue)
+      for (size_t index = 0; index < numCount; ++index) {
+        GoldbachSums goldbach_sums = sumQueues[threadNumber]->pop();
+        sums[index] = goldbach_sums.sums;
+      }
+      // Send sums to response
+      return webApp.serveGoldbachSums(httpResponse, sums);
+    }
+    /// Number requested too big (2^63 or greater)
+  } catch (const std::out_of_range& oor) {
+      return webApp.serveNotFound(httpResponse);
+  }
   /// Unrecognized request
   return webApp.serveNotFound(httpResponse);
 }
+// bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
+//   size_t threadNumber) {
+//   /// If the home page was asked
+//   if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/") {
+//     return webApp.serveHomepage(httpResponse);
+//   }
+//   std::vector<std::vector<std::string>> sums;
+//   sums.resize(numCount);
+//   // Consume the goldbach sums and store them in a vector
+//   // (pop sums from the queue)
+//   for (size_t index = 0; index < numCount; ++index) {
+//     GoldbachSums goldbach_sums = sumQueues[threadNumber]->pop();
+//     sums[index]= goldbach_sums.sums;
+//   }
+//     // Send sums to response
+//     return webApp.serveGoldbachSums(httpResponse, sums);
 
-void WebServer::stopProcessing() {
-  GoldbachSums assemblerStopCondition;
-  dispatcherStopCondition.threadNumber = INT64_MAX;
-  /// Sends the stop condition to the dispatchers consuming queue
-  for (int index = 0; index < consumerCount; index++) {
-    sumsAssemblers[index]->getConsumingQueue()->push(assemblerStopCondition);
-  }
-  dispatcher->getConsumingQueue()->push(dispatcherStopCondition);
-}
+//   /// Unrecognized request
+//   return webApp.serveNotFound(httpResponse);
+// }
+
+// void WebServer::stopProcessing() {
+//   GoldbachSums assemblerStopCondition;
+//   dispatcherStopCondition.threadNumber = INT64_MAX;
+//   /// Sends the stop condition to the dispatchers consuming queue
+//   for (int index = 0; index < consumerCount; index++) {
+//     sumsAssemblers[index]->getConsumingQueue()->push(assemblerStopCondition);
+//   }
+//   dispatcher->getConsumingQueue()->push(dispatcherStopCondition);
+// }
 // TODO: change to registerAssemblers. Creates a queue and an assembler 
 // for each connection thread also sets producing queue
-void WebServer::registerAssemblers() {
-  GoldbachSums assemblerStopCondition;
-  assemblerStopCondition.threadNumber = INT64_MAX;
+// void WebServer::registerAssemblers() {
+//   GoldbachSums assemblerStopCondition;
+//   assemblerStopCondition.threadNumber = INT64_MAX;
 
-  sumQueues.resize(consumerCount);
-  /// Gives a queue to extract the answers from for each connection thread
-  for (size_t index = 0; index < consumerCount; ++index) {
-    sumQueues[index] = new Queue<GoldbachSums>();
-    sumsAssemblers[index] = new sumsAssemblers(assemblerStopCondition);
-    sumsAssemblers[index]->setProducingQueue(sumQueues[index]);
-    // sumsAssemblers[index]->setConsumingQueue(); consume sockets
-    sumsAssemblers[index]->startThread();
-    //dispatcher->registerRedirect(index, sumQueues[index]);
-  }
-}
+//   sumQueues.resize(consumerCount);
+//   /// Gives a queue to extract the answers from for each connection thread
+//   for (size_t index = 0; index < consumerCount; ++index) {
+//     sumQueues[index] = new Queue<GoldbachSums>();
+//     sumsAssemblers[index] = new sumsAssemblers(assemblerStopCondition);
+//     sumsAssemblers[index]->setProducingQueue(sumQueues[index]);
+//     // sumsAssemblers[index]->setConsumingQueue(); consume sockets
+//     sumsAssemblers[index]->startThread();
+//     //dispatcher->registerRedirect(index, sumQueues[index]);
+//   }
+// }
