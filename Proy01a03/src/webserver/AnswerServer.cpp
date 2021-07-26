@@ -6,7 +6,7 @@ AnswerServer::AnswerServer(std::vector<Queue<GoldbachSums>*>* answerQueues, cons
   this->socketQueue = new Queue<Socket>();
 }
 AnswerServer::~AnswerServer() {
-
+  delete socketQueue;
 }
 // AnswerServer& AnswerServer::getInstance() {
 //   static AnswerServer answerServer;

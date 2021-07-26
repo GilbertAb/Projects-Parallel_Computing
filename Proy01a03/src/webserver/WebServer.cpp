@@ -120,6 +120,9 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
       
       size_t startPos = numberstr.find("=");
       socket << numberstr.substr(startPos+1, numberstr.length() - startPos - 1);
+
+      //std::cout << "\n" << numberstr.substr(startPos+1, numberstr.length() - startPos - 1) << "\n";
+      
       socket.send();
 
       std::vector<std::vector<std::string>> sums;
@@ -139,6 +142,12 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
   }
   /// Unrecognized request
   return webApp.serveNotFound(httpResponse);
+}
+void WebServer::stopWorkers() {
+  this->answerServer->stopListening();
+  this->answerServer->stopConsumers();
+  delete answerServer;
+  this->stopConsumers();
 }
 // bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
 //   size_t threadNumber) {
