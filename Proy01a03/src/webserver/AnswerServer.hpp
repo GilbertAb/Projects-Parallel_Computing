@@ -31,8 +31,6 @@ class AnswerServer : public TcpServer, public Thread {
    void handleClientConnection(Socket& client);
    /// Sends the stop condition, set the consumimg queue and starts the thread
    void startConsumers();
-   /// Stops the consumers
-   void stopConsumers();
   public:
    /// Gets the only instance of this class created
    /// @return A reference to the only instance of the server
@@ -44,6 +42,8 @@ class AnswerServer : public TcpServer, public Thread {
    /// This method is incharged of telling the connection handler how to handle
    /// a socket
    void getSocketInfo(Socket& client);
+   /// Stops the consumers
+   void stopConsumers();
 
   /// Constructor
    AnswerServer(std::vector<Queue<GoldbachSums>*>* answerQueues, const char* port);

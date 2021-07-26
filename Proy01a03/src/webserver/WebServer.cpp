@@ -124,7 +124,7 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
         numberstr = matches.suffix().str();
         numCount++;
       }
-
+      
       socket.send();
 
       std::vector<std::vector<std::string>> sums;
@@ -144,6 +144,12 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
   }
   /// Unrecognized request
   return webApp.serveNotFound(httpResponse);
+}
+void WebServer::stopWorkers() {
+  this->answerServer->stopListening();
+  this->answerServer->stopConsumers();
+  delete answerServer;
+  this->stopConsumers();
 }
 // bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
 //   size_t threadNumber) {

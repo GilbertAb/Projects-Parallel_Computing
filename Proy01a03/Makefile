@@ -1,6 +1,8 @@
 CXX=g++
-#DEFS=-DGOLDBACHSERVER
+APPNAME=WebServer
 DEFS=-DWEBSERVER
+APPNAME2=GoldbachServer
+DEFS2=-DGOLDBACHSERVER
 FLAGS=$(strip -Wall -Wextra -std=gnu++2a $(DEFS))
 LIBS=-pthread
 LINTFILTERS=$\
@@ -14,7 +16,7 @@ OBJ_DIR=build
 SRC_DIR=src
 
 DIRS=$(shell find $(SRC_DIR) -type d)
-APPNAME=$(shell basename $(shell pwd))
+# APPNAME=$(shell basename $(shell pwd))
 HEADERS=$(wildcard $(DIRS:%=%/*.hpp))
 SOURCES=$(wildcard $(DIRS:%=%/*.cpp))
 OBJECTS=$(SOURCES:src/%.cpp=build/%.o)
@@ -43,6 +45,10 @@ ubsan: debug
 
 $(EXEFILE): $(OBJECTS) | $$(@D)/.
 	$(CXX) $(FLAGS) $(INCLUDE) $^ -o $@ $(LIBS)
+ifeq ($(DEFS),-DWEBSERVER)
+	rm -rf $(OBJ_DIR)
+endif
+	$(MAKE) DEFS=$(DEFS2) APPNAME=$(APPNAME2)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS) | $$(@D)/.
 	$(CXX) -c $(FLAGS) $(INCLUDE) $< -o $@ $(LIBS)

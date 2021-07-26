@@ -38,6 +38,7 @@ class WebServer : public HttpServer {
   /// Start the simulation
   /// @param Receives the arguments and the number of them written by the user
   int start(int argc, char* argv[]);
+  void stopWorkers();
   /// Sends the stop signal to the Assemblers and the consuming queues of the
   /// calculators to make them stop
   // void stopProcessing();
