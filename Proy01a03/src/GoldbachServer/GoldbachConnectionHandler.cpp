@@ -26,13 +26,15 @@ void GoldbachConnectionHandler::consume(const Socket& client) {
   cpySocket.close();
 
   // If the request is not valid or an error happened
-  if (!validateRequest(sumsRequested)) {
+  if (validateRequest(sumsRequested)) {
+    std::cout << "Valid request " << sumsRequested<< "\n";
     goldbachServer->handleSumsRequest(sumsRequested, threadNumber);
   }
 }
 
 bool GoldbachConnectionHandler::validateRequest(std::string sumsRequested) {
   //request format: (threadNumber)t(num1)%2C(num2)%2C(num3)...
-  std::regex validRequest("\\d+t(-?\\d+(%2C-?\\d+)*)$");
-  return std::regex_match(sumsRequested, validRequest);
+  std::regex validRequest("^\\d+t(-?\\d+(%2C-?\\d+)*)$");
+  std::cout << "Validating request " << sumsRequested<< "\n";
+  return std::regex_match(sumsRequested, validRequest, std::regex_constants::match_not_null);
 }

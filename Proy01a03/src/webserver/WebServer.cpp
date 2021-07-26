@@ -40,7 +40,7 @@ int WebServer::start(int argc, char* argv[]) {
         sumQueues[index] = new Queue<GoldbachSums>();
       }
 
-      answerServer = new AnswerServer(&sumQueues, "8081");
+      answerServer = new AnswerServer(&sumQueues, "8082");
       answerServer ->startThread();
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
@@ -113,7 +113,7 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
       std::string numberstr = httpRequest.getURI();
       TcpClient client;
       Socket socket = client.connect("0.0.0.0", "8081");
-      socket << threadNumber << 't';
+      socket << threadNumber << "t";
       
       size_t startPos = numberstr.find("=");
       socket << numberstr.substr(startPos+1, numberstr.length() - startPos - 1);
@@ -151,50 +151,3 @@ void WebServer::stopWorkers() {
   delete answerServer;
   this->stopConsumers();
 }
-// bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
-//   size_t threadNumber) {
-//   /// If the home page was asked
-//   if (httpRequest.getMethod() == "GET" && httpRequest.getURI() == "/") {
-//     return webApp.serveHomepage(httpResponse);
-//   }
-//   std::vector<std::vector<std::string>> sums;
-//   sums.resize(numCount);
-//   // Consume the goldbach sums and store them in a vector
-//   // (pop sums from the queue)
-//   for (size_t index = 0; index < numCount; ++index) {
-//     GoldbachSums goldbach_sums = sumQueues[threadNumber]->pop();
-//     sums[index]= goldbach_sums.sums;
-//   }
-//     // Send sums to response
-//     return webApp.serveGoldbachSums(httpResponse, sums);
-
-//   /// Unrecognized request
-//   return webApp.serveNotFound(httpResponse);
-// }
-
-// void WebServer::stopProcessing() {
-//   GoldbachSums assemblerStopCondition;
-//   dispatcherStopCondition.threadNumber = INT64_MAX;
-//   /// Sends the stop condition to the dispatchers consuming queue
-//   for (int index = 0; index < consumerCount; index++) {
-//     sumsAssemblers[index]->getConsumingQueue()->push(assemblerStopCondition);
-//   }
-//   dispatcher->getConsumingQueue()->push(dispatcherStopCondition);
-// }
-// TODO: change to registerAssemblers. Creates a queue and an assembler 
-// for each connection thread also sets producing queue
-// void WebServer::registerAssemblers() {
-//   GoldbachSums assemblerStopCondition;
-//   assemblerStopCondition.threadNumber = INT64_MAX;
-
-//   sumQueues.resize(consumerCount);
-//   /// Gives a queue to extract the answers from for each connection thread
-//   for (size_t index = 0; index < consumerCount; ++index) {
-//     sumQueues[index] = new Queue<GoldbachSums>();
-//     sumsAssemblers[index] = new sumsAssemblers(assemblerStopCondition);
-//     sumsAssemblers[index]->setProducingQueue(sumQueues[index]);
-//     // sumsAssemblers[index]->setConsumingQueue(); consume sockets
-//     sumsAssemblers[index]->startThread();
-//     //dispatcher->registerRedirect(index, sumQueues[index]);
-//   }
-// }

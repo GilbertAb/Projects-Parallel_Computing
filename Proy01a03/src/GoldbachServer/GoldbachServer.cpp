@@ -79,21 +79,25 @@ bool GoldbachServer::analyzeArguments(int argc, char* argv[]) {
 }
 
 void GoldbachServer::handleClientConnection(Socket& client) {
+  std::cout << "pushing client\n";
   this->socketQueue.push(client);
 }
 
 void GoldbachServer::handleSumsRequest(std::string& sumsRequested, size_t thread_number) {
+  std::cout << "handling request " << sumsRequested << '\n';
   size_t num_count = 0;
-  size_t client_thread_number = stoll(sumsRequested);
-  while ((sumsRequested[0] <= '9' && sumsRequested[0] >= '0')
-      || sumsRequested[0] == 't') {
-      sumsRequested = sumsRequested.substr(1, sumsRequested.size() -1);
-    }
+  size_t client_thread_number = stoll(sumsRequested);       // extract thread number of httpHandler
+  while ((sumsRequested[0] <= '9' && sumsRequested[0] >= '0')) {
+    sumsRequested = sumsRequested.substr(1, sumsRequested.size() -1); // remove thread number
+  }
+  sumsRequested = sumsRequested.substr(1, sumsRequested.size() -1); //remove 't'
+  std::cout << "handling remaining request " << sumsRequested << '\n';
   while(!sumsRequested.empty()) {
     GoldbachNumber number;
     number.number = std::stoll(sumsRequested);
     number.threadNumber = thread_number;
     number.index = num_count;
+    std::cout << "pushing number " << number.number << '\n';
     numberQueue.push(number);
     ++num_count;
     while ((sumsRequested[0] <= '9' && sumsRequested[0] >= '0')
@@ -112,6 +116,11 @@ void GoldbachServer::handleSumsRequest(std::string& sumsRequested, size_t thread
   for (size_t index = 0; index < num_count; ++index) {
     GoldbachSums goldbach_sums = sumQueues[thread_number]->pop();
     sums[goldbach_sums.index] = goldbach_sums.sums;
+  }
+  for (size_t index = 0; index < sums.size(); ++index) {
+    for (size_t index2 = 0; index2 < sums.size(); ++index2) {
+      std::cout << sums[index][index2] << '\n';
+    } 
   }
   TcpClient client;
   Socket answer_socket = client.connect(response_server, response_port);
@@ -167,6 +176,7 @@ void GoldbachServer::registerQueues() {
 
 void GoldbachServer::startConsumers() {
   Socket stopCondition;
+  stopCondition.setSocketFileDescriptor(999);
   this->consumers.resize(this->consumerCount);
   for ( size_t index = 0; index < this->consumerCount; ++index ) {
     this->consumers[index] = new GoldbachConnectionHandler(this, stopCondition,

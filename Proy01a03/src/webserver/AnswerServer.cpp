@@ -1,9 +1,12 @@
 #include "AnswerServer.hpp"
+#include "NetworkAddress.hpp"
+#include <iostream>
 
 AnswerServer::AnswerServer(std::vector<Queue<GoldbachSums>*>* answerQueues, const char* port) {
   /// Creates the queue with the answers
   this->answerQueues = answerQueues;
   this->socketQueue = new Queue<Socket>();
+  this->port = port;
 }
 AnswerServer::~AnswerServer() {
   delete socketQueue;
@@ -20,7 +23,11 @@ void AnswerServer::handleClientConnection(Socket& client) {
 int AnswerServer::run() {
   /// Starts the handler thread and continues into a cycle of accepting requests
   this->startConsumers();
-  this->listenForever(this->port);
+  this->listenForConnections(this->port);
+  const NetworkAddress& address = this->getNetworkAddress();
+  std::cout << "answer server listening on " << address.getIP()
+    << " port " << address.getPort() << "...\n";
+  this->acceptAllConnections();
 }
 void AnswerServer::getSocketInfo(Socket& client) {
   std::string answer;

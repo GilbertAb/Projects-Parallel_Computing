@@ -113,7 +113,7 @@ class Socket {
   DECL_INSERT_OP(const char*)
   DECL_INSERT_OP(const std::string&)
 
- protected:
+ public:
   /// Get the socket file descriptor, the number that identifies the socket
   int getSocketFileDescriptor() const;
   /// Set the socket file descriptor. This operation is only made by network
