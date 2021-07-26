@@ -118,19 +118,19 @@ void GoldbachServer::handleSumsRequest(std::string& sumsRequested, size_t thread
     sums[goldbach_sums.index] = goldbach_sums.sums;
   }
   for (size_t index = 0; index < sums.size(); ++index) {
-    for (size_t index2 = 0; index2 < sums.size(); ++index2) {
+    for (size_t index2 = 0; index2 < sums[index].size(); ++index2) {
       std::cout << sums[index][index2] << '\n';
     } 
   }
   TcpClient client;
   Socket answer_socket = client.connect(response_server, response_port);
-  answer_socket << client_thread_number << 't';
+  answer_socket << client_thread_number << "t";
   for (size_t index = 0; index < num_count; ++index) {
     answer_socket << sums[index][0];
     for (size_t sum = 1; sum < sums[index].size(); ++index) {
-      answer_socket << ',' << sums[index][sum];
+      answer_socket << "," << sums[index][sum];
     }
-    answer_socket << '.';
+    answer_socket << ".";
   }
   answer_socket.send();
 }

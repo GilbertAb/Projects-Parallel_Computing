@@ -9,7 +9,7 @@
 #include "TcpServer.hpp"
 #include "Thread.hpp"
 
-#define DEFAULT_PORT2 "2525"
+#define DEFAULT_PORT2 "8082"
 
 class AnswerHandler;
 
@@ -17,6 +17,8 @@ class AnswerServer : public TcpServer, public Thread {
   DISABLE_COPY(AnswerServer);
   
   protected:
+   /// Lookup criteria for searching network information about this host
+   struct addrinfo hints;
    /// Port that will be listened to
    const char* port = DEFAULT_PORT2;
 
@@ -24,7 +26,7 @@ class AnswerServer : public TcpServer, public Thread {
    /// The consumer that will process the requests
    std::vector<AnswerHandler*> consumers;
    /// Queue with the socket connection
-   Queue<Socket>* socketQueue;
+   Queue<Socket> socketQueue;
    /// Queue where the answers are going to be stored
    std::vector<Queue<GoldbachSums>*>* answerQueues;
    /// Saves the string from the socket in the queue
