@@ -39,7 +39,7 @@ int WebServer::start(int argc, char* argv[]) {
       for (size_t index = 0; index < consumerCount; ++index) {
         sumQueues[index] = new Queue<GoldbachSums>();
       }
-
+      // TODO(KEVIN): make answerServer port a command line argument
       answerServer = new AnswerServer(&sumQueues, "8082");
       answerServer ->startThread();
       this->listenForConnections(this->port);
@@ -112,6 +112,7 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
       assert(matches.length() >= 3);
       std::string numberstr = httpRequest.getURI();
       TcpClient client;
+      // TODO(KEVIN): random mapping. Connect to Goldbach servers read from file
       Socket socket = client.connect("0.0.0.0", "8081");
       socket << threadNumber << "t";
       

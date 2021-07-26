@@ -3,7 +3,7 @@
 
 #include "GoldbachServer.hpp"
 #include "NetworkAddress.hpp"
-
+// TODO(DAVID): add documentation to files in this folder
 const char* const usage =
   "Usage: goldbachServer [response_server] [response_port] [port] [max_connections]\n"
   "\n"
@@ -17,6 +17,7 @@ GoldbachServer& GoldbachServer::getInstance() {
   static GoldbachServer goldbachServer;
   return goldbachServer;
 }
+
 GoldbachServer::GoldbachServer() {
   GoldbachSums stopCondition;
   stopCondition.threadNumber = INT64_MAX;
@@ -28,7 +29,7 @@ GoldbachServer::GoldbachServer() {
 GoldbachServer::~GoldbachServer() {
   delete dispatcher;
 }
-
+// TODO(DAVID): fix ctrl+c clean exit without exceptions/assertions
 int GoldbachServer::start(int argc, char* argv[]) {
   try {
     if (this->analyzeArguments(argc, argv)) {
@@ -46,8 +47,7 @@ int GoldbachServer::start(int argc, char* argv[]) {
     /// Clean exit if error detected
     stopConsumers();
   }
-  std::cout <<"terminating\n";
-  dispatcher->waitToFinish();
+    dispatcher->waitToFinish();
 
   return EXIT_SUCCESS;
 }
@@ -127,12 +127,13 @@ void GoldbachServer::handleSumsRequest(std::string& sumsRequested, size_t thread
   answer_socket << client_thread_number << "t";
   for (size_t index = 0; index < num_count; ++index) {
     answer_socket << sums[index][0];
-    for (size_t sum = 1; sum < sums[index].size(); ++index) {
+    for (size_t sum = 1; sum < sums[index].size(); ++sum) {
       answer_socket << "," << sums[index][sum];
     }
     answer_socket << ".";
   }
   answer_socket.send();
+  answer_socket.close();
 }
 
 void GoldbachServer::startCalculators() {
@@ -159,10 +160,14 @@ void GoldbachServer::stopProcessing() {
   for (size_t index = 0; index < threadCount; ++index) {
     numberQueue.push(numberStopCondition);
   }
+  for (size_t index = 0; index < threadCount; ++index) {
+    consumers[index]->waitToFinish();
+  }
   GoldbachSums dispatcherStopCondition;
   dispatcherStopCondition.threadNumber = INT64_MAX;
   /// Sends the stop condition to the dispatchers consuming queue
   dispatcher->getConsumingQueue()->push(dispatcherStopCondition);
+
 }
 
 void GoldbachServer::registerQueues() {
@@ -190,6 +195,7 @@ void GoldbachServer::startConsumers() {
 void GoldbachServer::stopConsumers() {
   for ( size_t index = 0; index < this->consumerCount; ++index ) {
     Socket socket;
+    socket.setSocketFileDescriptor(999);
     this->socketQueue.push(socket);
   }
   for ( size_t index = 0; index < this->consumerCount; ++index ) {
