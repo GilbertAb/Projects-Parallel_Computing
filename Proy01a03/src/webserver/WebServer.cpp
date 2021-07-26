@@ -110,16 +110,21 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
     std::regex inQuery("^/goldbach(/|\\?numbers=)(-?\\d+(%2C-?\\d*)*)$");
     if (std::regex_search(httpRequest.getURI(), matches, inQuery)) {
       assert(matches.length() >= 3);
-      std::regex comma("%2C");
-      std::regex_search(httpRequest.getURI(), matches, comma);
-      size_t numCount = matches.size() + 1;
+      std::string numberstr = httpRequest.getURI();
       TcpClient client;
       Socket socket = client.connect("0.0.0.0", "8081");
       socket << threadNumber << 't';
-      std::string numberstr = matches.str(2);
       
       size_t startPos = numberstr.find("=");
       socket << numberstr.substr(startPos+1, numberstr.length() - startPos - 1);
+
+      std::regex comma("%2C");
+      size_t numCount = 1;
+      while(std::regex_search(numberstr, matches,comma)) {
+        numberstr = matches.suffix().str();
+        numCount++;
+      }
+
       socket.send();
 
       std::vector<std::vector<std::string>> sums;
