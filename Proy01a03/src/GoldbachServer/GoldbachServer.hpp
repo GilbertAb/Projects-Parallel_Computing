@@ -42,10 +42,6 @@ class GoldbachServer : public TcpServer {
   SumsDispatcher* dispatcher;
   /// Concurrent connections
   size_t consumerCount = 10;
-  /// Sends the stop condition, set the consumimg queue and starts the thread
-  void startConsumers();
-  /// Stops the consumers
-  void stopConsumers();
 
  public:
   /// Constructor
@@ -84,6 +80,14 @@ class GoldbachServer : public TcpServer {
   void registerQueues();
 
   bool analyzeArguments(int argc, char* argv[]);
+  /// Sends the stop condition, set the consumimg queue and starts the thread
+  void startConsumers();
+  /// Stops the consumers
+  void stopConsumers();
+  /// Stops the dispatcher
+  void stopDispatcher();
+  /// send answers to response server
+  void sendResults(size_t& client_thread_num, size_t& num_count, size_t& thread_number);
 };
 
 #endif  // GOLDBACHSERVER_H

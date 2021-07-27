@@ -3,7 +3,7 @@
 
 #include "GoldbachServer.hpp"
 #include "NetworkAddress.hpp"
-// TODO(DAVID): add documentation to files in this folder
+
 const char* const usage =
   "Usage: goldbachServer [response_server] [response_port] [port] [max_connections]\n"
   "\n"
@@ -29,7 +29,7 @@ GoldbachServer::GoldbachServer() {
 GoldbachServer::~GoldbachServer() {
   delete dispatcher;
 }
-// TODO(DAVID): fix ctrl+c clean exit without exceptions/assertions
+
 int GoldbachServer::start(int argc, char* argv[]) {
   try {
     if (this->analyzeArguments(argc, argv)) {
@@ -41,13 +41,14 @@ int GoldbachServer::start(int argc, char* argv[]) {
       std::cout << "goldbach server listening on " << address.getIP()
         << " port " << address.getPort() << "...\n";
       this->acceptAllConnections();
+    } else {
+      this->stopDispatcher();
     }
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;
     /// Clean exit if error detected
     stopConsumers();
   }
-    dispatcher->waitToFinish();
 
   return EXIT_SUCCESS;
 }
@@ -79,61 +80,42 @@ bool GoldbachServer::analyzeArguments(int argc, char* argv[]) {
 }
 
 void GoldbachServer::handleClientConnection(Socket& client) {
-  std::cout << "pushing client\n";
   this->socketQueue.push(client);
 }
 
 void GoldbachServer::handleSumsRequest(std::string& sumsRequested, size_t thread_number) {
-  std::cout << "handling request " << sumsRequested << '\n';
   size_t num_count = 0;
-  size_t client_thread_number = stoll(sumsRequested);       // extract thread number of httpHandler
+  // extract thread number of httpHandler from webserver
+  size_t client_thread_num = stoll(sumsRequested);
   while ((sumsRequested[0] <= '9' && sumsRequested[0] >= '0')) {
-    sumsRequested = sumsRequested.substr(1, sumsRequested.size() -1); // remove thread number
+    // remove thread number from string
+    sumsRequested = sumsRequested.substr(1, sumsRequested.size() -1);
   }
-  sumsRequested = sumsRequested.substr(1, sumsRequested.size() -1); //remove 't'
-  std::cout << "handling remaining request " << sumsRequested << '\n';
+  //remove 't' from string
+  sumsRequested = sumsRequested.substr(1, sumsRequested.size() -1);
+
   while(!sumsRequested.empty()) {
     GoldbachNumber number;
     number.number = std::stoll(sumsRequested);
     number.threadNumber = thread_number;
     number.index = num_count;
-    std::cout << "pushing number " << number.number << '\n';
+    // push number to be processed by calculators
     numberQueue.push(number);
     ++num_count;
+    // remove extracted number from string
     while ((sumsRequested[0] <= '9' && sumsRequested[0] >= '0')
       || sumsRequested[0] == '-') {
       sumsRequested = sumsRequested.substr(1, sumsRequested.size() -1);
     }
+    // remove comma if multiple numbers where requested (%2C)
     if (sumsRequested.size() > 3) {
       sumsRequested = sumsRequested.substr(3, sumsRequested.size() -3);
     } else {
       sumsRequested.clear();
     }
   }
+  sendResults(client_thread_num, num_count, thread_number);
 
-  std::vector<std::vector<std::string>> sums;
-  sums.resize(num_count);
-  for (size_t index = 0; index < num_count; ++index) {
-    GoldbachSums goldbach_sums = sumQueues[thread_number]->pop();
-    sums[goldbach_sums.index] = goldbach_sums.sums;
-  }
-  for (size_t index = 0; index < sums.size(); ++index) {
-    for (size_t index2 = 0; index2 < sums[index].size(); ++index2) {
-      std::cout << sums[index][index2] << '\n';
-    } 
-  }
-  TcpClient client;
-  Socket answer_socket = client.connect(response_server, response_port);
-  answer_socket << client_thread_number << "t";
-  for (size_t index = 0; index < num_count; ++index) {
-    answer_socket << sums[index][0];
-    for (size_t sum = 1; sum < sums[index].size(); ++sum) {
-      answer_socket << "," << sums[index][sum];
-    }
-    answer_socket << ".";
-  }
-  answer_socket.send();
-  answer_socket.close();
 }
 
 void GoldbachServer::startCalculators() {
@@ -160,14 +142,7 @@ void GoldbachServer::stopProcessing() {
   for (size_t index = 0; index < threadCount; ++index) {
     numberQueue.push(numberStopCondition);
   }
-  for (size_t index = 0; index < threadCount; ++index) {
-    consumers[index]->waitToFinish();
-  }
-  GoldbachSums dispatcherStopCondition;
-  dispatcherStopCondition.threadNumber = INT64_MAX;
-  /// Sends the stop condition to the dispatchers consuming queue
-  dispatcher->getConsumingQueue()->push(dispatcherStopCondition);
-
+  this->stopDispatcher();
 }
 
 void GoldbachServer::registerQueues() {
@@ -181,7 +156,7 @@ void GoldbachServer::registerQueues() {
 
 void GoldbachServer::startConsumers() {
   Socket stopCondition;
-  stopCondition.setSocketFileDescriptor(999);
+  //stopCondition.setSocketFileDescriptor(999);
   this->consumers.resize(this->consumerCount);
   for ( size_t index = 0; index < this->consumerCount; ++index ) {
     this->consumers[index] = new GoldbachConnectionHandler(this, stopCondition,
@@ -193,12 +168,45 @@ void GoldbachServer::startConsumers() {
 }
 
 void GoldbachServer::stopConsumers() {
+  Socket socket;
+  //std::cout << "socket " <<socket.getSocketFileDescriptor();
+  //socket.setSocketFileDescriptor(999);
   for ( size_t index = 0; index < this->consumerCount; ++index ) {
-    Socket socket;
-    socket.setSocketFileDescriptor(999);
     this->socketQueue.push(socket);
   }
   for ( size_t index = 0; index < this->consumerCount; ++index ) {
     this->consumers[index]->waitToFinish();
   }
+}
+
+void GoldbachServer::stopDispatcher() {
+  GoldbachSums dispatcherStopCondition;
+  dispatcherStopCondition.threadNumber = INT64_MAX;
+  /// Sends the stop condition to the dispatchers consuming queue
+  dispatcher->getConsumingQueue()->push(dispatcherStopCondition);
+  dispatcher->waitToFinish();
+}
+
+void GoldbachServer::sendResults(size_t& client_thread_num, size_t& num_count, size_t& thread_number) {
+  // vector to store results
+  std::vector<std::vector<std::string>> sums;
+  sums.resize(num_count);
+  for (size_t index = 0; index < num_count; ++index) {
+    // sleep until all num_count results are extracted from queue
+    GoldbachSums goldbach_sums = sumQueues[thread_number]->pop();
+    sums[goldbach_sums.index] = goldbach_sums.sums;
+  }
+  TcpClient client;
+  Socket answer_socket = client.connect(response_server, response_port);
+  //example answer format: 1t25: 5 sums.-9: 2 sums, 2 + 2 + 5, 3 + 3 + 3.
+  answer_socket << client_thread_num << "t";
+  for (size_t index = 0; index < num_count; ++index) {
+    answer_socket << sums[index][0];
+    for (size_t sum = 1; sum < sums[index].size(); ++sum) {
+      answer_socket << "," << sums[index][sum];
+    }
+    answer_socket << ".";
+  }
+  answer_socket.send();
+  answer_socket.close();
 }

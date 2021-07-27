@@ -14,7 +14,7 @@ int GoldbachConnectionHandler::run() {
   // Start the forever loop to consume all the connections that arrive
   this->consumeForever();
 
-  // If the forever loop finished, no more client will arrive
+  // If the forever loop finished, no more clients will arrive
   return EXIT_SUCCESS;
 }
 
@@ -22,12 +22,10 @@ void GoldbachConnectionHandler::consume(const Socket& client) {
   Socket cpySocket = client;
   std::string sumsRequested;
   cpySocket.readLine(sumsRequested, '\0');
-  std::cout << "Socket connection with value" << sumsRequested << '\n';
   cpySocket.close();
 
-  // If the request is not valid or an error happened
+  // If the request is not valid it won't be processed
   if (validateRequest(sumsRequested)) {
-    std::cout << "Valid request " << sumsRequested<< "\n";
     goldbachServer->handleSumsRequest(sumsRequested, threadNumber);
   }
 }
@@ -35,6 +33,5 @@ void GoldbachConnectionHandler::consume(const Socket& client) {
 bool GoldbachConnectionHandler::validateRequest(std::string sumsRequested) {
   //request format: (threadNumber)t(num1)%2C(num2)%2C(num3)...
   std::regex validRequest("^\\d+t(-?\\d+(%2C-?\\d+)*)$");
-  std::cout << "Validating request " << sumsRequested<< "\n";
   return std::regex_match(sumsRequested, validRequest, std::regex_constants::match_not_null);
 }
