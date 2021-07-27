@@ -2,6 +2,8 @@
 
 #include <unistd.h>
 #include <cassert>
+#include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <regex>
 #include <stdexcept>
@@ -13,10 +15,12 @@
 #include "TcpClient.hpp"
 
 const char* const usage =
-  "Usage: webserv [port] [max_connections]\n"
+  "Usage: webserv [port] [answer_port] [max_connections]\n"
   "\n"
   "  port             Network port to listen incoming HTTP requests, default "
     DEFAULT_PORT "\n"
+  "  answer_port      Network port where the server is listening for goldbach "
+  "answers, default " ANSWER_PORT "\n"
   "  max_connections  Maximum number of allowed client connections\n";
 
 WebServer& WebServer::getInstance() {
@@ -39,8 +43,8 @@ int WebServer::start(int argc, char* argv[]) {
       for (size_t index = 0; index < consumerCount; ++index) {
         sumQueues[index] = new Queue<GoldbachSums>();
       }
-      // TODO(KEVIN): make answerServer port a command line argument
-      answerServer = new AnswerServer(&sumQueues, "8082");
+      this->readSendingLocation();
+      answerServer = new AnswerServer(&sumQueues, this->answersListeningPort);
       answerServer ->startThread();
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
@@ -62,7 +66,7 @@ bool WebServer::analyzeArguments(int argc, char* argv[]) {
   /// Traverse all arguments
   for (int index = 1; index < argc; ++index) {
     const std::string argument = argv[index];
-    if (argument.find("help") != std::string::npos || argc > 3) {
+    if (argument.find("help") != std::string::npos || argc > 4) {
       std::cout << usage;
       return false;
     }
@@ -70,9 +74,12 @@ bool WebServer::analyzeArguments(int argc, char* argv[]) {
   if (argc >= 2) {
     this->port = argv[1];
   }
-  if (argc == 3) {
+  if (argc >= 3) {
+    this->answersListeningPort = argv[2];
+  }
+  if (argc == 4) {
     try {
-      this->consumerCount = std::stoll(argv[2]);
+      this->consumerCount = std::stoll(argv[3]);
     } catch (const std::exception& error) {
       std::cerr << "error: invalid consumer count\n";
       return false;
@@ -112,8 +119,11 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
       assert(matches.length() >= 3);
       std::string numberstr = httpRequest.getURI();
       TcpClient client;
-      // TODO(KEVIN): random mapping. Connect to Goldbach servers read from file
-      Socket socket = client.connect("0.0.0.0", "8081");
+      /// Random mapping to chose a goldbach webserver
+      size_t random = rand() % this->sendingPorts.size();
+      std::cout << "Sending messsasge to:" << sendingPorts[random] << "\n";
+
+      Socket socket = client.connect("0.0.0.0", sendingPorts[random].c_str());
       socket << threadNumber << "t";
       
       size_t startPos = numberstr.find("=");
@@ -151,4 +161,14 @@ void WebServer::stopWorkers() {
   this->answerServer->stopConsumers();
   delete answerServer;
   this->stopConsumers();
+}
+void WebServer::readSendingLocation() {
+  std::fstream port_file("host.txt",std::ios::in);
+  std::string port;
+  while (getline(port_file,port)) {
+    /// Extract only the port
+    port = port.substr(port.find(' ')+1,4);
+    sendingPorts.push_back(port);
+  }
+  port_file.close();
 }
