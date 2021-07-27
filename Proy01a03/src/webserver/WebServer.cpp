@@ -121,9 +121,9 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
       TcpClient client;
       /// Random mapping to chose a goldbach webserver
       size_t random = rand() % this->sendingPorts.size();
-      std::cout << "Sending messsasge to:" << sendingPorts[random] << "\n";
 
-      Socket socket = client.connect("0.0.0.0", sendingPorts[random].c_str());
+      Socket socket = client.connect(sendingIP[random].c_str(), 
+        sendingPorts[random].c_str());
       socket << threadNumber << "t";
       
       size_t startPos = numberstr.find("=");
@@ -165,9 +165,13 @@ void WebServer::stopWorkers() {
 void WebServer::readSendingLocation() {
   std::fstream port_file("host.txt",std::ios::in);
   std::string port;
+  std::string ip;
   while (getline(port_file,port)) {
     /// Extract only the port
-    port = port.substr(port.find(' ')+1,4);
+    size_t space_char = port.find(' ');
+    ip = port.substr(space_char+1,7);
+    port = port.substr(port.find(' ',space_char+1)+1,4);
+    sendingIP.push_back(ip);
     sendingPorts.push_back(port);
   }
   port_file.close();

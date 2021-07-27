@@ -26,6 +26,8 @@ class WebServer : public HttpServer {
   const char* port = DEFAULT_PORT;
   /// Ports where the messages to the goldbach webserver will be sent
   std::vector<std::string> sendingPorts;
+  /// IP of the goldbach servers
+  std::vector<std::string> sendingIP;
   /// Server to receive results from calculators
   GoldbachWebApp webApp;
   const char* answersListeningPort = ANSWER_PORT;
