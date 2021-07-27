@@ -34,7 +34,7 @@ WebServer::WebServer() {
 WebServer::~WebServer() {
   // Liberar memoria de sums assemblers
 }
-
+// TODO(GILBERT): fix ctrl+c clean exit without exceptions/assertions
 int WebServer::start(int argc, char* argv[]) {
   try {
     if (this->analyzeArguments(argc, argv)) {
