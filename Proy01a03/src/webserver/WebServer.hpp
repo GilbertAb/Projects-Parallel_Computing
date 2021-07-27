@@ -12,7 +12,7 @@
 //#include "SumsAssembler.hpp"
 
 #define DEFAULT_PORT "8080"
-#define ANSWER_PORT "8082"
+#define DEFAULT_PORT2 "8082"
 
 class WebServer : public HttpServer {
   DISABLE_COPY(WebServer);
@@ -24,14 +24,13 @@ class WebServer : public HttpServer {
   ~WebServer();
   /// TCP port where this web server will listen for connections
   const char* port = DEFAULT_PORT;
-  /// Ports where the messages to the goldbach webserver will be sent
-  std::vector<std::string> sendingPorts;
-  /// IP of the goldbach servers
-  std::vector<std::string> sendingIP;
   /// Server to receive results from calculators
   GoldbachWebApp webApp;
-  const char* answersListeningPort = ANSWER_PORT;
-  AnswerServer* answerServer;
+  AnswerServer answerServer;
+  std::vector<std::vector<std::string>> hosts;
+  size_t hostCount = 0;
+  size_t answerConsumerCount = 10;
+  const char* answerPort = DEFAULT_PORT2;
   /// Queues where the answer for the requested sums are for each thread
   std::vector<Queue<GoldbachSums>*> sumQueues;
   /// Assemblers incharge of delivering the answers to the respective queue
@@ -60,11 +59,6 @@ class WebServer : public HttpServer {
   /// @return true on success and the server will continue handling requests
   bool handleHttpRequest(HttpRequest& httpRequest,
     HttpResponse& httpResponse, size_t threadNumber) override;
-  /// Reads from the host.txt file the ports to send information to the
-  /// goldbach servers
-  /// The method searches in each line a space character and asumes that the
-  /// following four characters are the port direction
-  void readSendingLocation();
 
  protected:
   /// Route, that provide an answer according to the URI value

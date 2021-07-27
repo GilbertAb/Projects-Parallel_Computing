@@ -2,7 +2,6 @@
 
 #include <unistd.h>
 #include <cassert>
-#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <regex>
@@ -15,13 +14,15 @@
 #include "TcpClient.hpp"
 
 const char* const usage =
-  "Usage: webserv [port] [answer_port] [max_connections]\n"
+  "Usage: webserv [hosts] [port] [max_connections] [answer_port] [max_connections_ans]\n"
   "\n"
-  "  port             Network port to listen incoming HTTP requests, default "
+  "  hosts                text file with the address and ports of goldbach servers\n"
+  "  port                 Network port to listen incoming HTTP requests, default "
     DEFAULT_PORT "\n"
-  "  answer_port      Network port where the server is listening for goldbach "
-  "answers, default " ANSWER_PORT "\n"
-  "  max_connections  Maximum number of allowed client connections\n";
+  "  max_connections      Maximum number of allowed client connections\n"
+  "  answer_port          Network port to listen incoming results from goldbach servers, default "
+    DEFAULT_PORT2 "\n"
+  "  max_connections_ans  Maximum number of allowed concurrent goldbach servers connections\n";
 
 WebServer& WebServer::getInstance() {
   static WebServer webServer;
@@ -29,12 +30,10 @@ WebServer& WebServer::getInstance() {
 }
 
 WebServer::WebServer() {
+  srand(time(0));
+}
+WebServer::~WebServer() {}
 
-}
-WebServer::~WebServer() {
-  // Liberar memoria de sums assemblers
-}
-// TODO(GILBERT): fix ctrl+c clean exit without exceptions/assertions
 int WebServer::start(int argc, char* argv[]) {
   try {
     if (this->analyzeArguments(argc, argv)) {
@@ -43,9 +42,8 @@ int WebServer::start(int argc, char* argv[]) {
       for (size_t index = 0; index < consumerCount; ++index) {
         sumQueues[index] = new Queue<GoldbachSums>();
       }
-      this->readSendingLocation();
-      answerServer = new AnswerServer(&sumQueues, this->answersListeningPort);
-      answerServer ->startThread();
+
+      answerServer.start(&sumQueues, answerPort, answerConsumerCount);
       this->listenForConnections(this->port);
       const NetworkAddress& address = this->getNetworkAddress();
       std::cout << "web server listening on " << address.getIP()
@@ -55,9 +53,9 @@ int WebServer::start(int argc, char* argv[]) {
   } catch (const std::runtime_error& error) {
     std::cerr << "error: " << error.what() << std::endl;
     /// Clean exit if error detected
+    stopWorkers();
     stopConsumers();
   }
-  //dispatcher->waitToFinish();
 
   return EXIT_SUCCESS;
 }
@@ -66,22 +64,47 @@ bool WebServer::analyzeArguments(int argc, char* argv[]) {
   /// Traverse all arguments
   for (int index = 1; index < argc; ++index) {
     const std::string argument = argv[index];
-    if (argument.find("help") != std::string::npos || argc > 4) {
+    if (argument.find("help") != std::string::npos || argc > 6 || argc < 2) {
       std::cout << usage;
       return false;
     }
   }
-  if (argc >= 2) {
-    this->port = argv[1];
+  std::ifstream is;
+  is.open(argv[1]);
+  if (is.is_open()) {
+    std::stringstream buffer;
+    buffer << is.rdbuf();
+    is.close();
+    buffer >> hostCount;
+    hosts.resize(hostCount);
+    for (size_t index = 0; index < hostCount; ++index) {
+      hosts[index].resize(2);
+      buffer >> hosts[index][0];
+      buffer >> hosts[index][1];
+    }
+  } else {
+    std::cerr << "error: could not open the specified file\n";
+    return false;
   }
-  if (argc >= 3) {
-    this->answersListeningPort = argv[2];
+  if (argc > 2) {
+    this->port = argv[2];
   }
-  if (argc == 4) {
+  if (argc > 3) {
     try {
       this->consumerCount = std::stoll(argv[3]);
     } catch (const std::exception& error) {
       std::cerr << "error: invalid consumer count\n";
+      return false;
+    }
+  }
+  if (argc > 4) {
+    this->answerPort = argv[4];
+  }
+  if (argc > 5) {
+    try {
+      this->answerConsumerCount = std::stoll(argv[5]);
+    } catch (const std::exception& error) {
+      std::cerr << "error: invalid answer server consumer count\n";
       return false;
     }
   }
@@ -119,11 +142,10 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
       assert(matches.length() >= 3);
       std::string numberstr = httpRequest.getURI();
       TcpClient client;
-      /// Random mapping to chose a goldbach webserver
-      size_t random = rand() % this->sendingPorts.size();
-
-      Socket socket = client.connect(sendingIP[random].c_str(), 
-        sendingPorts[random].c_str());
+      // random mapping to choose server
+      size_t server = rand() % hostCount;
+      std::cout << "connection to " << hosts[server][0].c_str() << " " << hosts[server][1].c_str() << '\n';
+      Socket socket = client.connect(hosts[server][0].c_str(), hosts[server][1].c_str());
       socket << threadNumber << "t";
       
       size_t startPos = numberstr.find("=");
@@ -157,22 +179,11 @@ bool WebServer::route(HttpRequest& httpRequest, HttpResponse& httpResponse,
   return webApp.serveNotFound(httpResponse);
 }
 void WebServer::stopWorkers() {
-  this->answerServer->stopListening();
-  this->answerServer->stopConsumers();
-  delete answerServer;
-  this->stopConsumers();
-}
-void WebServer::readSendingLocation() {
-  std::fstream port_file("host.txt",std::ios::in);
-  std::string port;
-  std::string ip;
-  while (getline(port_file,port)) {
-    /// Extract only the port
-    size_t space_char = port.find(' ');
-    ip = port.substr(space_char+1,7);
-    port = port.substr(port.find(' ',space_char+1)+1,4);
-    sendingIP.push_back(ip);
-    sendingPorts.push_back(port);
-  }
-  port_file.close();
+  // used to generate a connection error in answer server
+  this->answerServer.stopListening();
+    TcpClient dummyClient;
+  Socket dummySocket;
+  dummyClient.connect("0.0.0.0", "8082");
+  dummySocket.close();
+  this->answerServer.waitToFinish();
 }

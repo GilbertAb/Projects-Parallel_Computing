@@ -9,7 +9,6 @@
 #include "TcpServer.hpp"
 #include "Thread.hpp"
 
-#define DEFAULT_PORT2 "8082"
 
 class AnswerHandler;
 
@@ -20,7 +19,7 @@ class AnswerServer : public TcpServer, public Thread {
    /// Lookup criteria for searching network information about this host
    struct addrinfo hints;
    /// Port that will be listened to
-   const char* port = DEFAULT_PORT2;
+   const char* port;
 
    size_t consumerCount = 10;
    /// The consumer that will process the requests
@@ -47,8 +46,10 @@ class AnswerServer : public TcpServer, public Thread {
    /// Stops the consumers
    void stopConsumers();
 
+   void start(std::vector<Queue<GoldbachSums>*>* answerQueues, const char* port, size_t consumerCount);
+
   /// Constructor
-   AnswerServer(std::vector<Queue<GoldbachSums>*>* answerQueues, const char* port);
+   AnswerServer();
    /// Destructor
    ~AnswerServer();
 };

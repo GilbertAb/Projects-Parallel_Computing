@@ -13,7 +13,6 @@ void handleSignal(int signal) {
   int temp_errno = errno;
   // WebServer::getInstance().stopProcessing();
   WebServer::getInstance().stopListening();
-  WebServer::getInstance().stopWorkers();
   errno = temp_errno;
 }
 

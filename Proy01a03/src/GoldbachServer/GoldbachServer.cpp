@@ -156,7 +156,6 @@ void GoldbachServer::registerQueues() {
 
 void GoldbachServer::startConsumers() {
   Socket stopCondition;
-  //stopCondition.setSocketFileDescriptor(999);
   this->consumers.resize(this->consumerCount);
   for ( size_t index = 0; index < this->consumerCount; ++index ) {
     this->consumers[index] = new GoldbachConnectionHandler(this, stopCondition,
@@ -169,8 +168,6 @@ void GoldbachServer::startConsumers() {
 
 void GoldbachServer::stopConsumers() {
   Socket socket;
-  //std::cout << "socket " <<socket.getSocketFileDescriptor();
-  //socket.setSocketFileDescriptor(999);
   for ( size_t index = 0; index < this->consumerCount; ++index ) {
     this->socketQueue.push(socket);
   }

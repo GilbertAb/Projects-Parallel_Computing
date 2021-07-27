@@ -38,7 +38,7 @@ void HttpServer::stopConsumers() {
     Socket socket;
     this->socketQueue.push(socket);
   }
-  for ( size_t index = 0; index < this->consumerCount; ++index ) {
-    this->consumers[index]->waitToFinish();
-  }
+  // for ( size_t index = 0; index < this->consumerCount; ++index ) {
+  //   this->consumers[index]->waitToFinish();
+  // }
 }
