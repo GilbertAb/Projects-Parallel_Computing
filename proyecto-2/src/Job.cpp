@@ -3,6 +3,7 @@
 #include "Job.hpp"
 #include <unistd.h>
 #include <omp.h>
+#include <mpi.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -18,21 +19,28 @@ Job::~Job() {
   }
 }
 
-int Job::run(int argc, char* argv[], int process_count, int rank) {
-  int error = analyze_arguments(argc, argv);
-  if (error == EXIT_SUCCESS) {
-    try {
-      int64_t thread_count = sysconf(_SC_NPROCESSORS_ONLN);
-      if (argc == 3) {
-        thread_count = std::stoll(argv[2]);
+int Job::run(int argc, char* argv[]) {
+  int error = EXIT_SUCCESS;
+  if (MPI_Init(&argc, &argv) == MPI_SUCCESS) {
+    int process_count = 0, rank = 0;
+    MPI_Comm_size(MPI_COMM_WORLD, &process_count);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    error = analyze_arguments(argc, argv);
+    if (error == EXIT_SUCCESS) {
+      try {
+        int64_t thread_count = sysconf(_SC_NPROCESSORS_ONLN);
+        if (argc == 3) {
+          thread_count = std::stoll(argv[2]);
+        }
+        get_job(argv[1], process_count, rank);
+        simulate_days(create_output_directory(),
+          thread_count);
+      } catch (const std::runtime_error& e) {
+        std::cerr << "Error: " << e.what() <<'\n';
+        error = EXIT_FAILURE;
       }
-      get_job(argv[1], process_count, rank);
-      simulate_days(create_output_directory(),
-        thread_count);
-    } catch (const std::runtime_error& e) {
-      std::cerr << "Error: " << e.what() <<'\n';
-      error = EXIT_FAILURE;
     }
+    MPI_Finalize();
   }
   return error;
 }
@@ -110,10 +118,9 @@ void Job::create_map(std::string map_path, std::string map_name,
 
 void Job::simulate_days(std::string output_directory_path,
   size_t thread_count) {
-    std::cout << thread_count << '\n';
   #pragma omp parallel for num_threads(thread_count) \
-    shared(std::cout, output_directory_path) schedule(static)
-  for (size_t index = 0; index <= map.size(); ++index) {
+    shared(std::cout, output_directory_path, map, days) schedule(static)
+  for (size_t index = 0; index < map.size(); ++index) {
     std::fstream fstream;
     // create output file if current day is equal or greater
     size_t output_at_day = 0;
@@ -125,6 +132,7 @@ void Job::simulate_days(std::string output_directory_path,
       days[index] = -days[index];
       output_at_day = days[index];
     }
+    std::cout << map[index]->get_map_name() << "\n";
     // Update map during days
     for (size_t day = 0; day < (size_t)days[index]; ++day) {
       // Start creating output path

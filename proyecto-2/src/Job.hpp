@@ -45,7 +45,7 @@ class Job {
    * @param rank Number identifying the actual process
    * @return if it was a succes or a fail
    */
-  int run(int argc, char* argv[], int process_count, int rank);
+  int run(int argc, char* argv[]);
 
   /**
    * @brief Gets the map path, maps, days and map name from the file and send
