@@ -1,14 +1,17 @@
 // Copyright 2021 Rostipollos. Universidad de Costa Rica. CC BY 4.0
 
 #include "Job.hpp"
-#include <algorithm>
 #include <unistd.h>
 #include <omp.h>
 #include <mpi.h>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+
+
+
 
 const size_t MESSSAGE_LEN = 1;
 
@@ -16,7 +19,8 @@ const char* const usage =
   "Usage: forest [job] [thread_count]\n"
   "\n"
   "  path_of_job    text file with the requested work\n"
-  "  thread_count   amount of threads that will be created, default cpu core count\n";
+  "  thread_count   amount of threads that will be created,"
+  " default cpu core count\n";
 
 
 Job::Job() {}
@@ -41,26 +45,33 @@ int Job::run(int argc, char* argv[]) {
 }
 
 void Job::get_job(const char* filename) {
-  std::ifstream job(filename);                      // job textfile
-  int64_t message = 0;                              // number to send mpi messages
+  std::ifstream job(filename);
+  // number to send mpi messages
+  int64_t message = 0;
   int rank = -1;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   if (is_open(job, filename)) {
-    if(rank == 0) {
+    if (rank == 0) {
       int process_count = 0;
       size_t map_count = 0;
       MPI_Status status;
       MPI_Comm_size(MPI_COMM_WORLD, &process_count);
       // adapted from https://stackoverflow.com/a/3072840
-      map_count = 1 + std::count(std::istreambuf_iterator<char>(job), std::istreambuf_iterator<char>(), '\n');
-      for(int64_t map_index = 0; map_index < map_count; ++map_index) {
-        MPI_Recv(&message, MESSSAGE_LEN, MPI_INT64_T, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
-        MPI_Send(&map_index, MESSSAGE_LEN, MPI_INT64_T, status.MPI_SOURCE, 0, MPI_COMM_WORLD);
+      map_count = 1 + std::count(std::istreambuf_iterator<char>(job)
+        , std::istreambuf_iterator<char>(), '\n');
+      for (int64_t map_index = 0; map_index < map_count; ++map_index) {
+        MPI_Recv(&message, MESSSAGE_LEN, MPI_INT64_T, MPI_ANY_SOURCE
+          , 0, MPI_COMM_WORLD, &status);
+        MPI_Send(&map_index, MESSSAGE_LEN, MPI_INT64_T, status.MPI_SOURCE
+          , 0, MPI_COMM_WORLD);
       }
-      for (size_t proc_index = 0; proc_index < process_count - 1; ++proc_index) {
-        MPI_Recv(&message, MESSSAGE_LEN, MPI_INT64_T, MPI_ANY_SOURCE, 0, MPI_COMM_WORLD, &status);
-        message = -1; //stop condition
-        MPI_Send(&message, MESSSAGE_LEN, MPI_INT64_T, status.MPI_SOURCE, 0, MPI_COMM_WORLD);
+      for (size_t index = 0; index < process_count - 1; ++index) {
+        MPI_Recv(&message, MESSSAGE_LEN, MPI_INT64_T, MPI_ANY_SOURCE
+          , 0, MPI_COMM_WORLD, &status);
+        // stop condition
+        message = -1;
+        MPI_Send(&message, MESSSAGE_LEN, MPI_INT64_T, status.MPI_SOURCE
+          , 0, MPI_COMM_WORLD);
       }
     } else {
       std::string directory, map_name, sfilename = filename;
@@ -71,25 +82,23 @@ void Job::get_job(const char* filename) {
       if (std::string::npos != last_slash_pos) {
         directory = sfilename.substr(0, last_slash_pos + 1);
       }
-      while(true) {
-        message = 0; 
+      while (true) {
+        message = 0;
         MPI_Send(&message, MESSSAGE_LEN, MPI_INT64_T, 0, 0, MPI_COMM_WORLD);
-        MPI_Recv(&message, MESSSAGE_LEN, MPI_INT64_T, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        std::cout << "received message " << message <<'\n';
+        MPI_Recv(&message, MESSSAGE_LEN
+          , MPI_INT64_T, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         if (message == -1) {
           break;
         }
-        //skip_lines = message - skip_lines;
         for (line_index; line_index <= message; ++line_index) {
           job >> map_name;
           job >> days;
         }
-        std::cout << "Process " << rank << ": " << map_name << '\n';
         Map map;
         create_map(map, directory + map_name, map_name);
         simulate_days(map, days);
       }
-    } 
+    }
   }
 }
 

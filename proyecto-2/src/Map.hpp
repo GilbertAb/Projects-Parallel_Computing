@@ -29,7 +29,7 @@ class Map {
   std::vector<std::string> next_day_map;
 
  public:
-  Map(){};
+  Map();
   /**
    * Constructor.
    * Initializes class members using given parameters;

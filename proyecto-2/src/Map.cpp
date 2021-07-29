@@ -13,6 +13,7 @@ Map::Map(size_t rows, size_t columns, std::string map_name) {
   this->columns = columns;
 }
 
+Map::Map() {}
 Map::~Map() {}
 
 void Map::init_map(size_t rows, size_t columns) {
