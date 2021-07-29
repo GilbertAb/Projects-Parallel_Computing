@@ -11,9 +11,9 @@ LINTFILTERS=$\
 
 CC=mpic++ -cxx=g++
 CC2=mpic++ -cxx=clang++
-CFLAGS=-g -Wall -Wextra -fopenmp -std=gnu++11
-CFLAGS2= -O3 -std=gnu++11 -fopenmp
-LIBS=
+CFLAGS=-g -Wall -Wextra  -std=gnu++11
+CFLAGS2= -O3 -std=gnu++11
+LIBS=-fopenmp
 
 all: directory $(EXECUTABLES)
 
@@ -32,9 +32,13 @@ $(APPNAME)_tsan:  $(HEADERS) $(SOURCES) directory
 $(APPNAME)_ubsan:  $(HEADERS) $(SOURCES) directory
 	$(CC2) $(CFLAGS) -fsanitize=undefined $(SOURCES) -o bin/$(APPNAME)_ubsan $(LIBS)
 
-.PHONY: release
-release: directory
+.PHONY: omp+mpi
+omp+mpi: directory
 	$(CC) $(CFLAGS2) $(SOURCES) -o bin/$(APPNAME) $(LIBS)
+
+.PHONY: mpi
+mpi: directory
+	$(CC) $(CFLAGS2) $(SOURCES) -o bin/$(APPNAME)
 
 .PHONY: directory
 directory:
