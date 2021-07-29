@@ -100,9 +100,22 @@ In order to optimize the solution of our problem, we'll perform performance meas
 
   ### Distributed performance analysis
 
-  With our design, we obtained the expected results, since the execution time is now lower. As work units are big, the speedup wasn't that great using 24 threads instead of 8, resulting in lower efficiency. Work units being big could've increase the serial time of the process reducing the speedup. The program could be better with a different type of mapping that allows a better distribution of the work, using a smaller work unit, unless the additional overhead for synchronization makes it too inefficient.
+  With our design we improved greatly the execution time, lowering it to just a few minutes. As work units are big, dynamic mapping in the distributed part is more likely to have near optimal results. Work units being big could've increase the serial time of the process reducing the speedup, though. The program could be better with a different type of mapping in the concurrent part of the program, since our efficency depends entirely on the dimensions of the map.
 
-  Also we had an unexpected problem with mpi that made the processes terminate suddenly when more than 4 processes where created. Because of that, we couldn't measure the performance of the program using 24 single-threaded processes.
-
+  In the graph below we can see the speedup our three versions had. The 8-threaded omp implementation was the most efficient but also the slowest, most likely because of the amount of threads. The version that had best performance was the hybrid omp+mpi reducing the time to around three and a half minutes. 24 single-threaded processes in the mpi version also had a great speedup, however, it was slower than the mpi+omp version. This is probably because of the amount of maps, since the only way to have the 24 threads busy is to have at least 24 maps remaining. When less maps are left then concurrency reduces. 
+  
   ![Graph](./img/data-analysis-mpi.png "Execution time and efficiency")
+
+  Times obtained:
+  
+  omp 1 thread: 3473.57s obtained multiplying the 8 thread time by 6. It's only an estimated to calculate the speedup and efficiency
+
+  omp 8 thread: 578.93s
+
+  mpi 24 processes: 307.03s
+
+  omp+mpi 3 processes 24 threads: 208.94s
+
+
+  
  
