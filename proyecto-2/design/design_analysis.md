@@ -2,17 +2,17 @@
 
 ### Descomposición y Mapeo de la parte distribuida
 
-  La unidad de descomposición escogida fueron los mapas, donde a cada proceso se le da un conjunto de mapas de los cuales procesará todos sus dias. El tipo de mapeo utilizado es el mapeo cíclico.
+  La unidad de descomposición escogida fueron los mapas, donde a cada proceso se le da un mapa a la vez y procesará todos sus dias. El tipo de mapeo utilizado es el mapeo dinámico debido a su utilidad en este tipo de descomposición.
 
 ### Descomposición y Mapeo de la parte concurrente
 
-  La unidad de decomposición escogida fueron nuevamente los mapas. Cada hilo toma un mapa del conjunto de mapas del proceso a la vez. El mapeo escogido en este caso fue el mapeo dinámico, ya que tuvo mejor rendimiento en las mediciones realizadas anteriormente y es más acertado para este tipo de descomposición porque distribuye mejor el trabajo.
+  La unidad de decomposición escogida fueron las filas del mapa que se está procesando. Cada hilo toma un conjunto de filas distribuidas de forma cíclica. El mapeo escogido en este caso fue el mapeo cíclico porque todas las filas son del mismo tamaño por lo que no hubo una necesidad de utilizar mapeo dinámico
 
 ### Ventajas y desventajas del mapeo y descomposición
 
-  La ventaja de este tipo de descomposición y mapeo para la parte distribuida es que hace que los procesos no necesiten comunicación, lo que evita overheads de paso de mensajes. La desventaja es que los procesos podrían tener cargas de trabajo muy diferentes, dependiendo de la entrada.
+  La ventaja de este tipo de descomposición y mapeo para la parte distribuida es que presenta buenos resultados cuando se le dan trabajos de tamaño muy distinto entre sí. La desventaja es que los procesos podrían tener cargas de trabajo muy similares por lo que el aumento en el intercambio de mensajes crearía una demora en comparación con el mapeo estático.
 
-  La ventaja del tipo de descomposición escogido para la parte concurrente es que se adaptaba mejor a nuestro diseño serial que realizamos originalmente, ya que nuestro programa lee todos los mapas por adelantado antes de procesarlos, en lugar de trabajar mapa por mapa. La desventaja es que las cargas de trabajo pueden llegar a ser muy diferentes, dependiendo de la entrada, aumentando potencialmente el tiempo serial o de poca concurrencia. La ventaja de utilizar el mapeo dinámico es contrarrestar un poco el problema de la cargas de trabajo diferentes. La desventaja es que si la entrada forma cargas de trabajo iguales o muy similares para cada hilo, no vale la pena el tiempo adicional en tiempo de ejecución que implica realizar un mapeo dinámico.
+  La ventaja del tipo de descomposición escogido para la parte concurrente es que el procesamiento de cada día en el mapa se volverá más rápido. La desventaja es que hay una creación y destrucción de hilos constante lo cual puede causar un aumento en el tiempo. La ventaja de utilizar el mapeo estático es que se van a distribuir cargas de trabajo muy similares entre sí haciendo que sea benéfica la pequeña cantidad de comunicación existente. No se consideran desventajas para el tipo de mapeo ya que es el mejor para el caso donde las cargas de trabajo son muy similares.
 
 ### Manejo de entrada y salida de los procesos
 

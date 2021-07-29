@@ -2,7 +2,7 @@
 
 The program is made so that the class Job is in control of the functionality, it recieves the input from main and makes the output, gets the information needed to work with and creates the maps requested with the days said in the input and the simulation of passing time, for this its dependant on the class Map to work with each one of the requested maps applying the rules to update the cells with the passing days. The handling of files and input is not shown on the pseudocode because is meant to solve the problem of simulating the map according to its rules.
 
-The program distributes each map between the diferent threads. Only one thread is working on a map but several threads are working on several maps.
+The program distributes each map dynamically between the processes and on each map there are several threads updating the cells of the map. Each map is processed one at a time between different workers and several threads work on the same map.
 
 UML design:
 
