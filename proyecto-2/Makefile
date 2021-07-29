@@ -17,24 +17,23 @@ LIBS=
 
 all: directory $(EXECUTABLES)
 
-$(APPNAME): $(HEADERS) $(SOURCES)
+$(APPNAME): $(HEADERS) $(SOURCES) directory
 	$(CC) $(CFLAGS) $(SOURCES) -o bin/$(APPNAME) $(LIBS)
 
-$(APPNAME)_asan:  $(HEADERS) $(SOURCES)
+$(APPNAME)_asan:  $(HEADERS) $(SOURCES) directory
 	$(CC2) $(CFLAGS) -fsanitize=address $(SOURCES) -o bin/$(APPNAME)_asan $(LIBS)
 
-$(APPNAME)_msan:  $(HEADERS) $(SOURCES)
+$(APPNAME)_msan:  $(HEADERS) $(SOURCES) directory
 	$(CC2) $(CFLAGS) -fsanitize=memory $(SOURCES) -o bin/$(APPNAME)_msan $(LIBS)
 
-$(APPNAME)_tsan:  $(HEADERS) $(SOURCES)
+$(APPNAME)_tsan:  $(HEADERS) $(SOURCES) directory
 	$(CC2) $(CFLAGS) -fsanitize=thread $(SOURCES) -o bin/$(APPNAME)_tsan $(LIBS)
 
-$(APPNAME)_ubsan:  $(HEADERS) $(SOURCES)
+$(APPNAME)_ubsan:  $(HEADERS) $(SOURCES) directory
 	$(CC2) $(CFLAGS) -fsanitize=undefined $(SOURCES) -o bin/$(APPNAME)_ubsan $(LIBS)
 
 .PHONY: release
-release:
-	mkdir -p bin
+release: directory
 	$(CC) $(CFLAGS2) $(SOURCES) -o bin/$(APPNAME) $(LIBS)
 
 .PHONY: directory

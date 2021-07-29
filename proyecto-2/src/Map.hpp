@@ -29,6 +29,7 @@ class Map {
   std::vector<std::string> next_day_map;
 
  public:
+  Map(){};
   /**
    * Constructor.
    * Initializes class members using given parameters;
@@ -99,7 +100,7 @@ class Map {
    * @brief Updates all cells to their next day state.
    * @see update_cell()
    */
-  void end_day();
+  void end_day(size_t thread_count);
 
   /**
    * @brief Sets a new character to the cell.

@@ -20,10 +20,8 @@ class Job {
   DISABLE_COPY(Job);
 
  private:
-  /**< Array with the Map requested */
-  std::vector<Map*> map;
-  /**< Array with the days aligned in order with Map */
-  std::vector<int64_t> days;
+  size_t thread_count;
+  std::string output_directory;
 
  public:
   /**
@@ -59,7 +57,7 @@ class Job {
    * @param process_count Total number of processes working at the same time
    * @param rank Number identifying the current process id
    */
-  void get_job(const char* filename, int process_count, int rank);
+  void get_job(const char* filename);
 
   /**
    * @brief Creates and saves the Maps with the days requested
@@ -69,7 +67,7 @@ class Job {
    * @param map_name Name related to the map that will be saved
    * @param days Number of days related to the map
    */
-  void create_map(std::string map_path, std::string map_name, int64_t days);
+  void create_map(Map& map, std::string map_path, std::string map_name);
 
   /**
    * @brief Simulates the requested number of days to put in the output
@@ -80,13 +78,13 @@ class Job {
    * @param output_path The file path where the results are going to be stored
    * @param thread_count Number of threads in which the work will be distributed
    */
-  void simulate_days(std::string output_path, size_t thread_count);
+  void simulate_days(Map& map, int64_t days);
 
   /**
    * @brief Creates the directory for the outputs
    * @return The path to the newly created directory
    */
-  std::string create_output_directory();
+  void create_output_directory();
 
   /**
    * @brief Checks if the fstream file is open and if it isnt throws an error
@@ -94,9 +92,9 @@ class Job {
    * @param file the name of the file that was tried to open
    * @return a boolean result meaning if the file was succesfuly opened
    */
-  bool is_open(std::fstream& fstream, std::string file);
+  bool is_open(std::ifstream& ifstream, std::string file);
 
-  int analyze_arguments(int argc, char* argv[]);
+  bool analyze_arguments(int argc, char* argv[]);
 };
 
 #endif  // JOB_H

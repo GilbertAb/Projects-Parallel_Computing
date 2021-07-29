@@ -82,8 +82,8 @@ void Map::check_neighbors(char& tree_count, char& lake_count,
 }
 
 void Map::end_day(size_t thread_count) {
-#pragma omp parallel for default(none) num_threads(thread_count) \
-  shared(next_day_map) schedule(static)
+#pragma omp parallel for num_threads(thread_count) default(none) \
+  shared(current_day_map, next_day_map) schedule(dynamic)
   for (size_t row = 0; row < rows; ++row) {
     for (size_t col = 0; col < columns; ++col) {
       update_cell(row, col, next_day_map);
