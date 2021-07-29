@@ -10,9 +10,6 @@
 #include <sstream>
 #include <stdexcept>
 
-
-
-
 const size_t MESSSAGE_LEN = 1;
 
 const char* const usage =
